@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --accent: #E5092F;
+  --accent-hover: #c70828;
+  --bg: #080808;
+  --card: #151515;
+  --card-hover: #1b1b1b;
+  --border: #27272A;
+  --border-accent: rgba(229, 9, 47, 0.4);
+}
+
+@layer base {
+  body {
+    background-color: #080808;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  input, textarea, select {
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Glassmorphism & UI surfaces */
+.glass {
+  background: rgba(21, 21, 21, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #27272A;
+}
+
+.glass-accent {
+  background: rgba(229, 9, 47, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-accent);
+}
+
+.glow-red {
+  box-shadow: 0 0 30px rgba(229, 9, 47, 0.2);
+}
+
+.glow-red-lg {
+  box-shadow: 0 0 60px rgba(229, 9, 47, 0.15);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272A;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E5092F;
+}
+
+/* Safe area padding helper for modern mobile / Telegram Mini App */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 12px);
+}
+

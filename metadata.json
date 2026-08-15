@@ -1,0 +1,6 @@
+{
+  "name": "BABI STORE",
+  "description": "Telegram Mini App & Bot for Gaming, Social Media Services, and Website Development Services with Ethiopian Birr pricing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
