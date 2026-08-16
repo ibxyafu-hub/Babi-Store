@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { OrderItem } from '../types';
 import { useTelegram } from '../context/TelegramContext';
 import { formatPrice } from '../utils/formatters';
+import { getOrderStatusBannerText } from '../lib/ordersService';
 import {
   CheckCircle2,
   Copy,
@@ -12,7 +13,8 @@ import {
   Sparkles,
   Clock,
   Zap,
-  ExternalLink
+  ExternalLink,
+  AlertCircle
 } from 'lucide-react';
 
 interface OrderSuccessModalProps {
@@ -38,6 +40,10 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const isConfirmed = order.orderStatus === 'Confirmed';
+  const isProcessing = order.orderStatus === 'Processing';
+  const isCompleted = order.orderStatus === 'Completed';
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center items-center bg-black/85 backdrop-blur-md p-0 sm:p-4 overflow-y-auto">
       <div
@@ -46,15 +52,33 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
       >
         {/* Success Icon & Banner */}
         <div className="p-6 text-center bg-gradient-to-b from-[#E5092F]/15 via-[#151515] to-[#151515] border-b border-[#27272A]">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center mb-3 shadow-lg shadow-emerald-500/20 animate-scaleUp">
-            <CheckCircle2 className="w-9 h-9" />
+          <div
+            className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 shadow-lg animate-scaleUp border-2 ${
+              isCompleted
+                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400 shadow-emerald-500/20'
+                : isConfirmed
+                ? 'bg-amber-500/20 border-amber-500/40 text-amber-400 shadow-amber-500/20'
+                : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400 shadow-emerald-500/20'
+            }`}
+          >
+            {isConfirmed ? (
+              <CheckCircle2 className="w-9 h-9" />
+            ) : isCompleted ? (
+              <CheckCircle2 className="w-9 h-9" />
+            ) : (
+              <CheckCircle2 className="w-9 h-9" />
+            )}
           </div>
 
           <h2 className="text-xl font-black text-white tracking-tight">
-            Order Received
+            {isConfirmed ? 'Order Confirmed' : isCompleted ? 'Order Completed' : 'Order Received'}
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-1">
-            Thank you! Your order has been registered in the automated dispatch queue.
+            {isConfirmed
+              ? 'Your payment was verified and the order is accepted.'
+              : isCompleted
+              ? 'Your top-up has been successfully delivered!'
+              : 'Thank you! Your order has been registered in the automated dispatch queue.'}
           </p>
 
           {/* Unique Order ID badge */}
@@ -80,6 +104,21 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
 
         {/* Order Details Body */}
         <div className="p-4 overflow-y-auto space-y-3 flex-1">
+          {/* Real-time status callout */}
+          <div
+            className={`p-3 rounded-xl border text-xs font-semibold flex items-center gap-2.5 ${
+              isConfirmed
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                : isProcessing
+                ? 'bg-[#E5092F]/10 border-[#E5092F]/30 text-[#E5092F]'
+                : isCompleted
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-neutral-900 border-neutral-700 text-neutral-300'
+            }`}
+          >
+            <span>{getOrderStatusBannerText(order.orderStatus)}</span>
+          </div>
+
           <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-2.5 text-xs">
             <div className="flex justify-between py-1 border-b border-[#27272A]">
               <span className="text-[#A1A1AA]">Product</span>
@@ -105,8 +144,16 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
             </div>
             <div className="flex justify-between py-1 border-b border-[#27272A]">
               <span className="text-[#A1A1AA]">Order Status</span>
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30">
-                {order.orderStatus}
+              <span
+                className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                  isConfirmed
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                    : isCompleted
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                    : 'bg-[#E5092F]/15 text-[#E5092F] border-[#E5092F]/30'
+                }`}
+              >
+                {isConfirmed ? 'Order Confirmed' : order.orderStatus}
               </span>
             </div>
             <div className="flex justify-between py-1 border-b border-[#27272A]">

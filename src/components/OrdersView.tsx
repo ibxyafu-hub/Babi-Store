@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { OrderItem, OrderStatus } from '../types';
 import { useTelegram } from '../context/TelegramContext';
 import { formatPrice } from '../utils/formatters';
+import { getOrderStatusBannerText } from '../lib/ordersService';
 import {
   Search,
   Package,
@@ -11,7 +12,9 @@ import {
   RefreshCw,
   ShoppingBag,
   Filter,
-  ArrowLeft
+  ArrowLeft,
+  Zap,
+  AlertCircle
 } from 'lucide-react';
 
 interface OrdersViewProps {
@@ -59,35 +62,40 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
     return matchesStatus && matchesSearch;
   });
 
-      const getStatusBadge = (status: OrderStatus) => {
+  const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'Completed':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
             Completed
           </span>
         );
       case 'Processing':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30 flex items-center gap-1">
+            <Zap className="w-3 h-3" />
             Processing
           </span>
         );
       case 'Confirmed':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-            Confirmed
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-amber-400" />
+            Order Confirmed
           </span>
         );
       case 'Cancelled':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3" />
             Cancelled
           </span>
         );
       default:
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-neutral-500/10 text-neutral-300 border border-neutral-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-neutral-500/10 text-neutral-300 border border-neutral-500/20 flex items-center gap-1">
+            <Clock className="w-3 h-3 text-neutral-400" />
             Pending
           </span>
         );
@@ -276,6 +284,23 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   </div>
                   <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-[#E5092F] transition-colors" />
                 </div>
+              </div>
+
+              {/* Live Status Notice */}
+              <div
+                className={`px-2.5 py-1.5 rounded-xl text-[11px] font-medium flex items-center gap-1.5 border ${
+                  order.orderStatus === 'Confirmed'
+                    ? 'bg-amber-500/10 border-amber-500/25 text-amber-300'
+                    : order.orderStatus === 'Processing'
+                    ? 'bg-[#E5092F]/10 border-[#E5092F]/25 text-[#E5092F]'
+                    : order.orderStatus === 'Completed'
+                    ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400'
+                    : order.orderStatus === 'Cancelled'
+                    ? 'bg-rose-500/10 border-rose-500/25 text-rose-300'
+                    : 'bg-[#111111] border-[#27272A] text-[#A1A1AA]'
+                }`}
+              >
+                <span>{getOrderStatusBannerText(order.orderStatus)}</span>
               </div>
             </div>
           ))}

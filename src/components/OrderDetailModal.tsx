@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { OrderItem } from '../types';
 import { useTelegram } from '../context/TelegramContext';
 import { formatPrice } from '../utils/formatters';
+import { getOrderStatusBannerText } from '../lib/ordersService';
 import {
   X,
   Copy,
@@ -54,11 +55,42 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
     }
   };
 
+  const getBannerStyle = (status: string) => {
+    switch (status) {
+      case 'Completed':
+        return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+      case 'Processing':
+        return 'bg-[#E5092F]/10 border-[#E5092F]/30 text-[#E5092F]';
+      case 'Confirmed':
+        return 'bg-amber-500/10 border-amber-500/30 text-amber-300';
+      case 'Cancelled':
+        return 'bg-rose-500/10 border-rose-500/30 text-rose-300';
+      default:
+        return 'bg-neutral-900 border-neutral-700 text-neutral-300';
+    }
+  };
+
   const steps = [
-    { title: 'Order Submitted', done: true, time: new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
-    { title: 'Payment Confirmed', done: order.orderStatus !== 'Pending' && order.orderStatus !== 'Cancelled', time: 'Instant' },
-    { title: 'Automated Dispatch', done: order.orderStatus === 'Processing' || order.orderStatus === 'Completed', time: 'In progress' },
-    { title: 'Delivered & Completed', done: order.orderStatus === 'Completed', time: order.orderStatus === 'Completed' ? 'Delivered' : 'Pending' }
+    {
+      title: 'Order Submitted',
+      done: true,
+      time: new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    },
+    {
+      title: 'Order Confirmed (Accepted)',
+      done: order.orderStatus === 'Confirmed' || order.orderStatus === 'Processing' || order.orderStatus === 'Completed',
+      time: order.orderStatus === 'Confirmed' || order.orderStatus === 'Processing' || order.orderStatus === 'Completed' ? 'Confirmed' : 'Pending'
+    },
+    {
+      title: 'Processing Top-up',
+      done: order.orderStatus === 'Processing' || order.orderStatus === 'Completed',
+      time: order.orderStatus === 'Completed' ? 'Delivered' : order.orderStatus === 'Processing' ? 'In progress' : 'Pending'
+    },
+    {
+      title: 'Delivered & Completed',
+      done: order.orderStatus === 'Completed',
+      time: order.orderStatus === 'Completed' ? 'Delivered' : 'Pending'
+    }
   ];
 
   return (
@@ -75,7 +107,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 #{order.orderId}
               </span>
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusColor(order.orderStatus)}`}>
-                {order.orderStatus}
+                {order.orderStatus === 'Confirmed' ? 'Order Confirmed' : order.orderStatus}
               </span>
             </div>
             <span className="text-[10px] text-[#A1A1AA]">
@@ -96,6 +128,16 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
         {/* Content */}
         <div className="p-4 overflow-y-auto space-y-4 flex-1">
+          {/* Prominent Status Banner */}
+          <div className={`p-3 rounded-2xl border text-xs font-semibold flex items-center gap-2.5 ${getBannerStyle(order.orderStatus)}`}>
+            {order.orderStatus === 'Confirmed' && <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />}
+            {order.orderStatus === 'Processing' && <Zap className="w-4 h-4 text-[#E5092F] shrink-0" />}
+            {order.orderStatus === 'Completed' && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
+            {order.orderStatus === 'Cancelled' && <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />}
+            {order.orderStatus === 'Pending' && <Clock className="w-4 h-4 text-neutral-400 shrink-0" />}
+            <span>{getOrderStatusBannerText(order.orderStatus)}</span>
+          </div>
+
           {/* Product Header Card */}
           <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#111111] border border-[#27272A]">
             <img
@@ -127,7 +169,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           {/* Timeline / Progress */}
           <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-3">
             <span className="text-xs font-bold text-neutral-300 block">
-              Fulfillment Status
+              Fulfillment Timeline
             </span>
 
             <div className="space-y-2.5">

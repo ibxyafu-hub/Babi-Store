@@ -3,6 +3,7 @@ import { Product, ProductPackage, PaymentMethod, OrderItem } from '../types';
 import { PAYMENT_METHODS } from '../data/catalog';
 import { useTelegram } from '../context/TelegramContext';
 import { formatPrice } from '../utils/formatters';
+import { createFirestoreOrder } from '../lib/ordersService';
 import {
   X,
   ArrowLeft,
@@ -132,42 +133,34 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
     haptic('heavy');
 
     try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId: product.id,
-          packageId: selectedPackage.id,
-          quantity,
-          paymentMethod: activePaymentMethod.name,
-          paymentAccount: `${activePaymentMethod.accountName} (${activePaymentMethod.accountNumber})`,
-          transactionId: transactionId.trim(),
-          customerInfo: {
-            ...customerInfo,
-            transaction_id: transactionId.trim(),
-            payment_gateway: activePaymentMethod.name,
-            account_number: activePaymentMethod.accountNumber
-          },
-          telegramUser: {
-            id: user.id,
-            username: user.username || 'user',
-            firstName: user.first_name,
-            lastName: user.last_name
-          }
-        })
+      // Save directly to Firebase Firestore
+      const newOrder = await createFirestoreOrder({
+        product,
+        selectedPackage,
+        quantity,
+        paymentMethod: activePaymentMethod.name,
+        paymentAccount: `${activePaymentMethod.accountName} (${activePaymentMethod.accountNumber})`,
+        transactionId: transactionId.trim(),
+        customerInfo: {
+          ...customerInfo,
+          transaction_id: transactionId.trim(),
+          payment_gateway: activePaymentMethod.name,
+          account_number: activePaymentMethod.accountNumber
+        },
+        telegramUser: {
+          id: user.id,
+          username: user.username || 'user',
+          firstName: user.first_name,
+          lastName: user.last_name
+        },
+        notes: `Order created via BABI STORE Mini App.`
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to process order');
-      }
-
       haptic('success');
-      onOrderSuccess(data.order);
+      onOrderSuccess(newOrder);
     } catch (err: any) {
-      console.error('Order submission error:', err);
-      setSubmitError(err.message || 'Network error occurred while submitting order.');
+      console.error('Order submission Firestore error:', err);
+      setSubmitError(err.message || 'Unable to register your order in Firestore. Please check your connection and try again.');
       haptic('error');
     } finally {
       setIsSubmitting(false);

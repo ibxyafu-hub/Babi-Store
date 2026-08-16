@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Orders collection: Allow read and create
+    match /orders/{orderId} {
+      allow read, create: if true;
+      allow update: if true;
+    }
+    
+    // Default fallthrough for all other documents
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -241,509 +241,511 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* ========================================================================= */}
       {/* 🌟 2026 REDESIGNED CATEGORY SECTION: LARGE MODERN VISUAL CARDS            */}
       {/* ========================================================================= */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-4 bg-[#E5092F] rounded-full" />
-            <h2 className="text-xs font-extrabold uppercase tracking-wider text-neutral-300">
-              Browse Categories
-            </h2>
+      {!searchQuery.trim() && (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-4 bg-[#E5092F] rounded-full" />
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-neutral-300">
+                Browse Categories
+              </h2>
+            </div>
+            <button
+              onClick={() => {
+                haptic('light');
+                onSelectCategory(expandedMainCat, 'all');
+              }}
+              className="text-xs text-[#E5092F] hover:text-[#ff3355] font-bold flex items-center gap-1 transition-colors"
+            >
+              <span>View All Items</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-          <button
-            onClick={() => {
-              haptic('light');
-              onSelectCategory(expandedMainCat, 'all');
-            }}
-            className="text-xs text-[#E5092F] hover:text-[#ff3355] font-bold flex items-center gap-1 transition-colors"
-          >
-            <span>View All Items</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
 
-        {/* THREE LARGE MODERN VISUAL CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* 1. 🎮 GAMING CARD */}
-          <motion.button
-            id="home-main-cat-gaming"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
-            whileHover={{ scale: 1.015 }}
-            whileTap={{ scale: 0.985 }}
-            onClick={() => {
-              haptic('medium');
-              if (expandedMainCat === 'gaming') {
-                onSelectCategory('gaming', 'all');
-              } else {
-                setExpandedMainCat('gaming');
-              }
-            }}
-            className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
-              expandedMainCat === 'gaming'
-                ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
-                : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
-            }`}
-          >
-            {/* Background Image with Cinematic Gradient */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-              <img
-                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
-                alt="Gaming"
-                className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
-                  expandedMainCat === 'gaming'
-                    ? 'scale-105 opacity-35'
-                    : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
-                }`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
-              <div
-                className={`absolute inset-0 transition-opacity duration-300 ${
-                  expandedMainCat === 'gaming'
-                    ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
-                    : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
-                }`}
-              />
-            </div>
-
-            {/* Card Top Row: Badge & Counter */}
-            <div className="relative z-10 flex items-center justify-between mb-5">
-              <div
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
-                  expandedMainCat === 'gaming'
-                    ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
-                    : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
-                }`}
-              >
-                <span className="text-xs">🎮</span>
-                <span>GAMING</span>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
+          {/* THREE LARGE MODERN VISUAL CARDS */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* 1. 🎮 GAMING CARD */}
+            <motion.button
+              id="home-main-cat-gaming"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => {
+                haptic('medium');
+                if (expandedMainCat === 'gaming') {
+                  onSelectCategory('gaming', 'all');
+                } else {
+                  setExpandedMainCat('gaming');
+                }
+              }}
+              className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
+                expandedMainCat === 'gaming'
+                  ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
+                  : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
+              }`}
+            >
+              {/* Background Image with Cinematic Gradient */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+                  alt="Gaming"
+                  className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
                     expandedMainCat === 'gaming'
-                      ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
-                      : 'bg-black/60 text-[#A1A1AA] border border-white/10'
+                      ? 'scale-105 opacity-35'
+                      : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
                   }`}
-                >
-                  {products.filter((p) => p.category === 'gaming').length} items
-                </span>
-                {expandedMainCat === 'gaming' && (
-                  <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
-                )}
-              </div>
-            </div>
-
-            {/* Card Bottom Content */}
-            <div className="relative z-10 space-y-1">
-              <div className="flex items-center justify-between">
-                <h3
-                  className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
+                <div
+                  className={`absolute inset-0 transition-opacity duration-300 ${
                     expandedMainCat === 'gaming'
-                      ? 'text-white'
-                      : 'text-neutral-100 group-hover:text-white'
+                      ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
+                      : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
                   }`}
-                >
-                  Gaming
-                </h3>
+                />
+              </div>
+
+              {/* Card Top Row: Badge & Counter */}
+              <div className="relative z-10 flex items-center justify-between mb-5">
                 <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
                     expandedMainCat === 'gaming'
-                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
-                      : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
+                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
+                      : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
                   }`}
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <span className="text-xs">🎮</span>
+                  <span>GAMING</span>
                 </div>
-              </div>
-              <p
-                className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
-                  expandedMainCat === 'gaming' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
-                }`}
-              >
-                Instant Top-Ups, UC, Diamonds & Coins
-              </p>
-            </div>
 
-            {expandedMainCat === 'gaming' && (
-              <motion.div
-                layoutId="homeActiveCatIndicator"
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
-                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              />
-            )}
-          </motion.button>
-
-          {/* 2. 📱 SOCIAL MEDIA CARD */}
-          <motion.button
-            id="home-main-cat-social"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
-            whileHover={{ scale: 1.015 }}
-            whileTap={{ scale: 0.985 }}
-            onClick={() => {
-              haptic('medium');
-              if (expandedMainCat === 'social') {
-                onSelectCategory('social', 'all');
-              } else {
-                setExpandedMainCat('social');
-              }
-            }}
-            className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
-              expandedMainCat === 'social'
-                ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
-                : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
-            }`}
-          >
-            {/* Background Image with Cinematic Gradient */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-              <img
-                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80"
-                alt="Social Media"
-                className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
-                  expandedMainCat === 'social'
-                    ? 'scale-105 opacity-35'
-                    : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
-                }`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
-              <div
-                className={`absolute inset-0 transition-opacity duration-300 ${
-                  expandedMainCat === 'social'
-                    ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
-                    : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
-                }`}
-              />
-            </div>
-
-            {/* Card Top Row: Badge & Counter */}
-            <div className="relative z-10 flex items-center justify-between mb-5">
-              <div
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
-                  expandedMainCat === 'social'
-                    ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
-                    : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
-                }`}
-              >
-                <span className="text-xs">📱</span>
-                <span>SOCIAL MEDIA</span>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
-                    expandedMainCat === 'social'
-                      ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
-                      : 'bg-black/60 text-[#A1A1AA] border border-white/10'
-                  }`}
-                >
-                  {products.filter((p) => p.category === 'social').length} items
-                </span>
-                {expandedMainCat === 'social' && (
-                  <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
-                )}
-              </div>
-            </div>
-
-            {/* Card Bottom Content */}
-            <div className="relative z-10 space-y-1">
-              <div className="flex items-center justify-between">
-                <h3
-                  className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
-                    expandedMainCat === 'social'
-                      ? 'text-white'
-                      : 'text-neutral-100 group-hover:text-white'
-                  }`}
-                >
-                  Social Media
-                </h3>
-                <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
-                    expandedMainCat === 'social'
-                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
-                      : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
-                  }`}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </div>
-              </div>
-              <p
-                className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
-                  expandedMainCat === 'social' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
-                }`}
-              >
-                Stars, Premium, Boosts & Coins
-              </p>
-            </div>
-
-            {expandedMainCat === 'social' && (
-              <motion.div
-                layoutId="homeActiveCatIndicator"
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
-                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              />
-            )}
-          </motion.button>
-
-          {/* 3. 🌐 WEBSITE SERVICES CARD */}
-          <motion.button
-            id="home-main-cat-website"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
-            whileHover={{ scale: 1.015 }}
-            whileTap={{ scale: 0.985 }}
-            onClick={() => {
-              haptic('medium');
-              onSelectCategory('website', 'all');
-            }}
-            className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
-              expandedMainCat === 'website'
-                ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
-                : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
-            }`}
-          >
-            {/* Background Image with Cinematic Gradient */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-              <img
-                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80"
-                alt="Website Services"
-                className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
-                  expandedMainCat === 'website'
-                    ? 'scale-105 opacity-35'
-                    : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
-                }`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
-              <div
-                className={`absolute inset-0 transition-opacity duration-300 ${
-                  expandedMainCat === 'website'
-                    ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
-                    : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
-                }`}
-              />
-            </div>
-
-            {/* Card Top Row: Badge & Counter */}
-            <div className="relative z-10 flex items-center justify-between mb-5">
-              <div
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
-                  expandedMainCat === 'website'
-                    ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
-                    : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
-                }`}
-              >
-                <span className="text-xs">🌐</span>
-                <span>WEB SERVICES</span>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
-                    expandedMainCat === 'website'
-                      ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
-                      : 'bg-black/60 text-[#A1A1AA] border border-white/10'
-                  }`}
-                >
-                  Custom
-                </span>
-                {expandedMainCat === 'website' && (
-                  <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
-                )}
-              </div>
-            </div>
-
-            {/* Card Bottom Content */}
-            <div className="relative z-10 space-y-1">
-              <div className="flex items-center justify-between">
-                <h3
-                  className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
-                    expandedMainCat === 'website'
-                      ? 'text-white'
-                      : 'text-neutral-100 group-hover:text-white'
-                  }`}
-                >
-                  Website Services
-                </h3>
-                <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
-                    expandedMainCat === 'website'
-                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
-                      : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
-                  }`}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </div>
-              </div>
-              <p
-                className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
-                  expandedMainCat === 'website' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
-                }`}
-              >
-                Websites & Telegram Mini Apps
-              </p>
-            </div>
-
-            {expandedMainCat === 'website' && (
-              <motion.div
-                layoutId="homeActiveCatIndicator"
-                className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
-                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              />
-            )}
-          </motion.button>
-        </div>
-
-        {/* ========================================================================= */}
-        {/* 🚀 SMOOTH REVEAL OF SUBCATEGORIES ON SELECTION                             */}
-        {/* ========================================================================= */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={expandedMainCat}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="p-3.5 bg-[#111111] rounded-2xl border border-[#27272A] space-y-2.5 shadow-md shadow-black/40"
-          >
-            {expandedMainCat === 'website' ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between px-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm">🌐</span>
-                    <span className="text-xs font-bold text-white tracking-tight">
-                      Website Services & Telegram Apps
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      haptic('light');
-                      onSelectCategory('website', 'all');
-                    }}
-                    className="text-[10px] font-bold text-[#E5092F] hover:text-[#ff3355] flex items-center gap-0.5"
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
+                      expandedMainCat === 'gaming'
+                        ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
+                        : 'bg-black/60 text-[#A1A1AA] border border-white/10'
+                    }`}
                   >
-                    <span>Full Details</span>
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
+                    {products.filter((p) => p.category === 'gaming').length} items
+                  </span>
+                  {expandedMainCat === 'gaming' && (
+                    <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
+                  )}
+                </div>
+              </div>
+
+              {/* Card Bottom Content */}
+              <div className="relative z-10 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h3
+                    className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
+                      expandedMainCat === 'gaming'
+                        ? 'text-white'
+                        : 'text-neutral-100 group-hover:text-white'
+                    }`}
+                  >
+                    Gaming
+                  </h3>
+                  <div
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
+                      expandedMainCat === 'gaming'
+                        ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
+                        : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
+                    }`}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+                <p
+                  className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
+                    expandedMainCat === 'gaming' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
+                  }`}
+                >
+                  Instant Top-Ups, UC, Diamonds & Coins
+                </p>
+              </div>
+
+              {expandedMainCat === 'gaming' && (
+                <motion.div
+                  layoutId="homeActiveCatIndicator"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+            </motion.button>
+
+            {/* 2. 📱 SOCIAL MEDIA CARD */}
+            <motion.button
+              id="home-main-cat-social"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.08, ease: [0.25, 1, 0.5, 1] }}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => {
+                haptic('medium');
+                if (expandedMainCat === 'social') {
+                  onSelectCategory('social', 'all');
+                } else {
+                  setExpandedMainCat('social');
+                }
+              }}
+              className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
+                expandedMainCat === 'social'
+                  ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
+                  : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
+              }`}
+            >
+              {/* Background Image with Cinematic Gradient */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80"
+                  alt="Social Media"
+                  className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
+                    expandedMainCat === 'social'
+                      ? 'scale-105 opacity-35'
+                      : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
+                  }`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
+                <div
+                  className={`absolute inset-0 transition-opacity duration-300 ${
+                    expandedMainCat === 'social'
+                      ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
+                      : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
+                  }`}
+                />
+              </div>
+
+              {/* Card Top Row: Badge & Counter */}
+              <div className="relative z-10 flex items-center justify-between mb-5">
+                <div
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
+                    expandedMainCat === 'social'
+                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
+                      : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
+                  }`}
+                >
+                  <span className="text-xs">📱</span>
+                  <span>SOCIAL MEDIA</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#151515] border border-[#27272A] space-y-2">
-                  <p className="text-xs text-white font-semibold">
-                    Need a website for your business? Contact BABI STORE to discuss your project.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
+                      expandedMainCat === 'social'
+                        ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
+                        : 'bg-black/60 text-[#A1A1AA] border border-white/10'
+                    }`}
+                  >
+                    {products.filter((p) => p.category === 'social').length} items
+                  </span>
+                  {expandedMainCat === 'social' && (
+                    <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
+                  )}
+                </div>
+              </div>
+
+              {/* Card Bottom Content */}
+              <div className="relative z-10 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h3
+                    className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
+                      expandedMainCat === 'social'
+                        ? 'text-white'
+                        : 'text-neutral-100 group-hover:text-white'
+                    }`}
+                  >
+                    Social Media
+                  </h3>
+                  <div
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
+                      expandedMainCat === 'social'
+                        ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
+                        : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
+                    }`}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+                <p
+                  className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
+                    expandedMainCat === 'social' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
+                  }`}
+                >
+                  Stars, Premium, Boosts & Coins
+                </p>
+              </div>
+
+              {expandedMainCat === 'social' && (
+                <motion.div
+                  layoutId="homeActiveCatIndicator"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+            </motion.button>
+
+            {/* 3. 🌐 WEBSITE SERVICES CARD */}
+            <motion.button
+              id="home-main-cat-website"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.16, ease: [0.25, 1, 0.5, 1] }}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => {
+                haptic('medium');
+                onSelectCategory('website', 'all');
+              }}
+              className={`group relative overflow-hidden rounded-2xl p-4 text-left border transition-all duration-300 transform-gpu ${
+                expandedMainCat === 'website'
+                  ? 'border-[#E5092F] bg-[#141011] shadow-[0_0_24px_rgba(229,9,47,0.22)] ring-1 ring-[#E5092F]/40'
+                  : 'border-[#27272A] bg-[#111111] hover:border-[#3f3f46] hover:bg-[#151515] shadow-lg shadow-black/40'
+              }`}
+            >
+              {/* Background Image with Cinematic Gradient */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80"
+                  alt="Website Services"
+                  className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out ${
+                    expandedMainCat === 'website'
+                      ? 'scale-105 opacity-35'
+                      : 'opacity-20 group-hover:scale-105 group-hover:opacity-30'
+                  }`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0e] via-[#0d0d0e]/80 to-transparent" />
+                <div
+                  className={`absolute inset-0 transition-opacity duration-300 ${
+                    expandedMainCat === 'website'
+                      ? 'bg-gradient-to-br from-[#E5092F]/15 via-transparent to-black/60 opacity-100'
+                      : 'bg-gradient-to-b from-black/40 to-black/80 opacity-80'
+                  }`}
+                />
+              </div>
+
+              {/* Card Top Row: Badge & Counter */}
+              <div className="relative z-10 flex items-center justify-between mb-5">
+                <div
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider transition-colors ${
+                    expandedMainCat === 'website'
+                      ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40'
+                      : 'bg-black/60 backdrop-blur-md text-neutral-300 border border-white/10'
+                  }`}
+                >
+                  <span className="text-xs">🌐</span>
+                  <span>WEB SERVICES</span>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-colors ${
+                      expandedMainCat === 'website'
+                        ? 'bg-[#E5092F]/20 text-white border border-[#E5092F]/40'
+                        : 'bg-black/60 text-[#A1A1AA] border border-white/10'
+                    }`}
+                  >
+                    Custom
+                  </span>
+                  {expandedMainCat === 'website' && (
+                    <span className="w-2 h-2 rounded-full bg-[#E5092F] animate-pulse" />
+                  )}
+                </div>
+              </div>
+
+              {/* Card Bottom Content */}
+              <div className="relative z-10 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h3
+                    className={`text-base sm:text-lg font-black tracking-tight transition-colors ${
+                      expandedMainCat === 'website'
+                        ? 'text-white'
+                        : 'text-neutral-100 group-hover:text-white'
+                    }`}
+                  >
+                    Website Services
+                  </h3>
+                  <div
+                    className={`w-7 h-7 rounded-xl flex items-center justify-center transition-all ${
+                      expandedMainCat === 'website'
+                        ? 'bg-[#E5092F] text-white shadow-sm shadow-[#E5092F]/40 scale-105'
+                        : 'bg-black/50 border border-white/10 text-neutral-400 group-hover:text-white group-hover:border-white/20'
+                    }`}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
+                <p
+                  className={`text-xs font-medium tracking-tight line-clamp-1 transition-colors ${
+                    expandedMainCat === 'website' ? 'text-[#ff788f]' : 'text-[#A1A1AA]'
+                  }`}
+                >
+                  Websites & Telegram Mini Apps
+                </p>
+              </div>
+
+              {expandedMainCat === 'website' && (
+                <motion.div
+                  layoutId="homeActiveCatIndicator"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E5092F] to-transparent z-20"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
+            </motion.button>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* 🚀 SMOOTH REVEAL OF SUBCATEGORIES ON SELECTION                             */}
+          {/* ========================================================================= */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={expandedMainCat}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="p-3.5 bg-[#111111] rounded-2xl border border-[#27272A] space-y-2.5 shadow-md shadow-black/40"
+            >
+              {expandedMainCat === 'website' ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between px-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm">🌐</span>
+                      <span className="text-xs font-bold text-white tracking-tight">
+                        Website Services & Telegram Apps
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        haptic('light');
+                        onSelectCategory('website', 'all');
+                      }}
+                      className="text-[10px] font-bold text-[#E5092F] hover:text-[#ff3355] flex items-center gap-0.5"
+                    >
+                      <span>Full Details</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-[#151515] border border-[#27272A] space-y-2">
+                    <p className="text-xs text-white font-semibold">
+                      Need a website for your business? Contact BABI STORE to discuss your project.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <a
+                        href="tel:0989678770"
+                        onClick={() => haptic('medium')}
+                        className="flex items-center justify-between p-2.5 rounded-lg bg-[#111111] hover:bg-[#1f1f1f] border border-[#27272A] hover:border-[#E5092F]/50 text-white font-medium transition-all"
+                      >
+                        <span className="flex items-center gap-2 text-[11px]">
+                          <Phone className="w-3.5 h-3.5 text-[#E5092F]" />
+                          <span>0989678770</span>
+                        </span>
+                        <span className="text-[10px] font-bold text-[#E5092F]">Call</span>
+                      </a>
+
+                      <a
+                        href="https://t.me/Raf_babi"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => haptic('medium')}
+                        className="flex items-center justify-between p-2.5 rounded-lg bg-[#111111] hover:bg-[#1f1f1f] border border-[#27272A] hover:border-[#E5092F]/50 text-white font-medium transition-all"
+                      >
+                        <span className="flex items-center gap-2 text-[11px]">
+                          <Send className="w-3.5 h-3.5 text-[#E5092F]" />
+                          <span>@Raf_babi</span>
+                        </span>
+                        <span className="text-[10px] font-bold text-[#E5092F]">Chat</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-0.5">
                     <a
                       href="tel:0989678770"
-                      onClick={() => haptic('medium')}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-[#111111] hover:bg-[#1f1f1f] border border-[#27272A] hover:border-[#E5092F]/50 text-white font-medium transition-all"
+                      onClick={() => haptic('heavy')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#151515] hover:bg-[#1f1f1f] text-white font-bold text-xs border border-[#27272A] hover:border-[#E5092F] transition-all text-center"
                     >
-                      <span className="flex items-center gap-2 text-[11px]">
-                        <Phone className="w-3.5 h-3.5 text-[#E5092F]" />
-                        <span>0989678770</span>
-                      </span>
-                      <span className="text-[10px] font-bold text-[#E5092F]">Call</span>
+                      <Phone className="w-3.5 h-3.5 text-[#E5092F]" />
+                      <span>📞 Call Now</span>
                     </a>
-
                     <a
                       href="https://t.me/Raf_babi"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => haptic('medium')}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-[#111111] hover:bg-[#1f1f1f] border border-[#27272A] hover:border-[#E5092F]/50 text-white font-medium transition-all"
+                      onClick={() => haptic('heavy')}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-bold text-xs shadow-md shadow-[#E5092F]/30 transition-all text-center"
                     >
-                      <span className="flex items-center gap-2 text-[11px]">
-                        <Send className="w-3.5 h-3.5 text-[#E5092F]" />
-                        <span>@Raf_babi</span>
-                      </span>
-                      <span className="text-[10px] font-bold text-[#E5092F]">Chat</span>
+                      <MessageCircle className="w-3.5 h-3.5 text-white" />
+                      <span>💬 Telegram</span>
                     </a>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-2 pt-0.5">
-                  <a
-                    href="tel:0989678770"
-                    onClick={() => haptic('heavy')}
-                    className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#151515] hover:bg-[#1f1f1f] text-white font-bold text-xs border border-[#27272A] hover:border-[#E5092F] transition-all text-center"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-[#E5092F]" />
-                    <span>📞 Call Now</span>
-                  </a>
-                  <a
-                    href="https://t.me/Raf_babi"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => haptic('heavy')}
-                    className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-bold text-xs shadow-md shadow-[#E5092F]/30 transition-all text-center"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5 text-white" />
-                    <span>💬 Telegram</span>
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between px-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm">
-                      {expandedMainCat === 'gaming' ? '🎮' : '📱'}
-                    </span>
-                    <span className="text-xs font-bold text-white tracking-tight">
-                      {expandedMainCat === 'gaming' ? 'Gaming' : 'Social Media'} Subcategories
+              ) : (
+                <>
+                  <div className="flex items-center justify-between px-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm">
+                        {expandedMainCat === 'gaming' ? '🎮' : '📱'}
+                      </span>
+                      <span className="text-xs font-bold text-white tracking-tight">
+                        {expandedMainCat === 'gaming' ? 'Gaming' : 'Social Media'} Subcategories
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-[#A1A1AA]">
+                      Tap to explore
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#A1A1AA]">
-                    Tap to explore
-                  </span>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {currentSubcategories.map((sub, subIdx) => {
-                    const IconComp = sub.icon;
-                    return (
-                      <motion.button
-                        key={sub.id}
-                        id={`home-subcat-${sub.id}`}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.25, delay: subIdx * 0.05 }}
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.985 }}
-                        onClick={() => {
-                          haptic('medium');
-                          onSelectCategory(expandedMainCat, sub.id);
-                        }}
-                        className="group flex flex-col p-3 rounded-xl bg-[#151515] hover:bg-[#1a1213] border border-[#27272A] hover:border-[#E5092F]/50 transition-all text-left"
-                      >
-                        <div className="flex items-center justify-between w-full mb-2">
-                          <div className="w-8 h-8 rounded-lg bg-[#111111] border border-[#27272A] text-neutral-300 group-hover:text-white group-hover:border-[#E5092F]/40 flex items-center justify-center transition-colors">
-                            <IconComp className="w-4 h-4" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {currentSubcategories.map((sub, subIdx) => {
+                      const IconComp = sub.icon;
+                      return (
+                        <motion.button
+                          key={sub.id}
+                          id={`home-subcat-${sub.id}`}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.25, delay: subIdx * 0.05 }}
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.985 }}
+                          onClick={() => {
+                            haptic('medium');
+                            onSelectCategory(expandedMainCat, sub.id);
+                          }}
+                          className="group flex flex-col p-3 rounded-xl bg-[#151515] hover:bg-[#1a1213] border border-[#27272A] hover:border-[#E5092F]/50 transition-all text-left"
+                        >
+                          <div className="flex items-center justify-between w-full mb-2">
+                            <div className="w-8 h-8 rounded-lg bg-[#111111] border border-[#27272A] text-neutral-300 group-hover:text-white group-hover:border-[#E5092F]/40 flex items-center justify-center transition-colors">
+                              <IconComp className="w-4 h-4" />
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#111111] text-[#A1A1AA] border border-[#27272A] group-hover:text-[#E5092F] group-hover:border-[#E5092F]/30 transition-colors">
+                                {sub.count} items
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#E5092F] transition-colors" />
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#111111] text-[#A1A1AA] border border-[#27272A] group-hover:text-[#E5092F] group-hover:border-[#E5092F]/30 transition-colors">
-                              {sub.count} items
-                            </span>
-                            <ChevronRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-[#E5092F] transition-colors" />
-                          </div>
-                        </div>
 
-                        <span className="text-xs font-extrabold text-white group-hover:text-[#E5092F] transition-colors line-clamp-1">
-                          {sub.name}
-                        </span>
-                        <span className="text-[10px] text-[#A1A1AA] line-clamp-1 mt-0.5">
-                          {sub.items}
-                        </span>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </section>
+                          <span className="text-xs font-extrabold text-white group-hover:text-[#E5092F] transition-colors line-clamp-1">
+                            {sub.name}
+                          </span>
+                          <span className="text-[10px] text-[#A1A1AA] line-clamp-1 mt-0.5">
+                            {sub.items}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </section>
+      )}
 
       {/* Recent Orders Section (if user has orders) */}
       {recentOrders.length > 0 && !searchQuery && (
@@ -803,10 +805,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         ? 'bg-[#E5092F]/15 text-[#E5092F] border-[#E5092F]/30'
                         : order.orderStatus === 'Confirmed'
                         ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                        : order.orderStatus === 'Cancelled'
+                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                         : 'bg-neutral-500/10 text-neutral-300 border-neutral-500/20'
                     }`}
                   >
-                    {order.orderStatus}
+                    {order.orderStatus === 'Confirmed' ? 'Order Confirmed' : order.orderStatus}
                   </span>
                   <ChevronRight className="w-4 h-4 text-neutral-500" />
                 </div>

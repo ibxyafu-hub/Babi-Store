@@ -522,23 +522,39 @@ export const INITIAL_PRODUCTS: Product[] = [
     name: 'Telegram Premium',
     category: 'social',
     subCategory: 'social-services',
-    tagline: 'Official Telegram Premium Gift Subscriptions (3m, 6m, 1y)',
+    tagline: 'Official Telegram Premium Subscriptions (3m, 6m, 1y)',
     shortDescription: 'Unlock 4GB uploads, faster speeds, voice-to-text, animated emojis & star badges.',
-    longDescription: 'Official Telegram Premium subscription gifted directly to your @username. Enjoy double limits, 4GB file uploads, faster download speed, voice message transcription, premium stickers, custom emoji reactions, and verified star badge.',
+    longDescription: 'Official Telegram Premium subscription activation. Enjoy double limits, 4GB file uploads, faster download speed, voice message transcription, premium stickers, custom emoji reactions, and verified star badge.',
     icon: 'Crown',
     image: '/telegrampremium.jpg',
-    badge: 'Official Gift',
+    badge: 'Premium Activation',
     isPopular: true,
     popularPriceText: '6 months ➡️ 3,900 birr',
     status: 'Fast Delivery',
     deliveryEstimate: '1 - 3 minutes',
     requiredFields: [
       {
+        id: 'login_phone',
+        label: 'Telegram Login Phone Number',
+        placeholder: 'e.g. +251 9XXXXXXXX or 09XXXXXXXX',
+        type: 'text',
+        helperText: 'Phone number registered to your Telegram account',
+        required: true
+      },
+      {
+        id: 'login_password',
+        label: 'Telegram Login Password / 2FA',
+        placeholder: 'Enter your login or Two-Step Verification password',
+        type: 'text',
+        helperText: 'Two-Step Verification password or account login password',
+        required: true
+      },
+      {
         id: 'telegram_username',
         label: 'Telegram Username (@)',
         placeholder: 'e.g. @your_username',
         type: 'text',
-        helperText: 'Premium gift will be delivered directly to this username without password',
+        helperText: 'Your Telegram username for account identification',
         required: true
       }
     ],
@@ -549,9 +565,9 @@ export const INITIAL_PRODUCTS: Product[] = [
     ],
     guideSteps: [
       'Choose subscription duration (3, 6, or 12 months)',
-      'Enter your @username (no password needed)',
-      'Complete payment',
-      'A gift notification appears in your Telegram chat to activate instantly'
+      'Enter your Telegram login phone number, password & @username',
+      'Complete secure payment via Telebirr or CBE',
+      'Premium subscription is activated on your Telegram account in 1-3 minutes'
     ]
   },
 
