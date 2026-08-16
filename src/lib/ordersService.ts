@@ -12,12 +12,13 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { OrderItem, OrderStatus, Product, ProductPackage } from '../types';
+import { getOrCreateGuestId } from '../context/TelegramContext';
 
 export const ORDERS_COLLECTION = 'orders';
 const LOCAL_STORAGE_ORDER_IDS_KEY = 'babi_store_customer_order_ids';
 
 /**
- * Local Storage helpers for tracking placed customer order IDs across visits
+ * Local Storage helpers for tracking placed customer order IDs across visits on this device
  */
 export function getLocalOrderIds(): string[] {
   try {
@@ -102,6 +103,8 @@ export function parseFirestoreOrderDoc(id: string, data: any): OrderItem {
     paymentStatus: data.paymentStatus || 'Paid',
     orderStatus: displayStatus,
     customerInfo: data.customerInfo || {},
+    guestId: data.guestId || undefined,
+    customerType: data.customerType || (data.telegramUser?.id ? 'telegram' : 'guest'),
     telegramUser: data.telegramUser || { id: 0, username: '', firstName: 'Customer' },
     createdAt: data.createdAt || new Date().toISOString(),
     updatedAt: data.updatedAt || new Date().toISOString(),
@@ -130,12 +133,14 @@ export interface CreateOrderParams {
   paymentAccount?: string;
   transactionId: string;
   customerInfo: Record<string, string>;
-  telegramUser: {
+  telegramUser?: {
     id: number;
-    username: string;
-    firstName: string;
+    username?: string;
+    firstName?: string;
     lastName?: string;
   };
+  guestId?: string;
+  isGuest?: boolean;
   notes?: string;
 }
 
@@ -147,6 +152,13 @@ export async function createFirestoreOrder(params: CreateOrderParams): Promise<O
   const nowIso = new Date().toISOString();
   const totalPrice = Number((params.selectedPackage.price * params.quantity).toFixed(2));
   const amount = (params.selectedPackage.amount || 1) * params.quantity;
+
+  const isRealTelegramUser = Boolean(
+    !params.isGuest && params.telegramUser && params.telegramUser.id > 0
+  );
+  const currentGuestId = isRealTelegramUser
+    ? undefined
+    : params.guestId || getOrCreateGuestId();
 
   const orderData: any = {
     orderId,
@@ -173,12 +185,20 @@ export async function createFirestoreOrder(params: CreateOrderParams): Promise<O
       transaction_id: params.transactionId,
       payment_gateway: params.paymentMethod
     },
-    telegramUser: {
-      id: params.telegramUser.id,
-      username: params.telegramUser.username || 'user',
-      firstName: params.telegramUser.firstName || 'Customer',
-      lastName: params.telegramUser.lastName || ''
-    },
+    guestId: currentGuestId || null,
+    customerType: isRealTelegramUser ? 'telegram' : 'guest',
+    telegramUser: isRealTelegramUser
+      ? {
+          id: params.telegramUser!.id,
+          username: params.telegramUser!.username || '',
+          firstName: params.telegramUser!.firstName || 'Customer',
+          lastName: params.telegramUser!.lastName || ''
+        }
+      : {
+          id: 0,
+          username: '',
+          firstName: 'Guest Customer'
+        },
     notes: params.notes || `Order created via BABI STORE Mini App.`,
     createdAt: nowIso,
     updatedAt: nowIso,
@@ -210,49 +230,87 @@ export async function fetchOrderByIdFromFirestore(orderId: string): Promise<Orde
   }
 }
 
+export interface CustomerIdentityParams {
+  telegramUserId?: number;
+  guestId?: string;
+  isGuest?: boolean;
+}
+
 /**
- * Fetch orders for a user and any locally placed orders from Firestore
+ * Fetch orders strictly belonging to the active customer identity
  */
-export async function fetchUserOrdersFromFirestore(telegramUserId: number): Promise<OrderItem[]> {
+export async function fetchCustomerOrdersFromFirestore(
+  identity: CustomerIdentityParams
+): Promise<OrderItem[]> {
   try {
     const ordersMap = new Map<string, OrderItem>();
 
-    // 1. Fetch by telegram user ID
-    if (telegramUserId) {
+    // 1. If real Telegram user: ONLY fetch orders with matching telegramUser.id
+    if (!identity.isGuest && identity.telegramUserId && identity.telegramUserId > 0) {
       const ordersRef = collection(db, ORDERS_COLLECTION);
-      const q = query(ordersRef, where('telegramUser.id', '==', telegramUserId));
+      const q = query(ordersRef, where('telegramUser.id', '==', identity.telegramUserId));
       const snapshot = await getDocs(q);
       snapshot.forEach((docSnap) => {
         ordersMap.set(docSnap.id, parseFirestoreOrderDoc(docSnap.id, docSnap.data()));
       });
-    }
+    } else {
+      // 2. If Web Guest user: ONLY fetch orders matching this device's guestId
+      const currentGuestId = identity.guestId || getOrCreateGuestId();
+      if (currentGuestId) {
+        const ordersRef = collection(db, ORDERS_COLLECTION);
+        const qGuest = query(ordersRef, where('guestId', '==', currentGuestId));
+        const snapshotGuest = await getDocs(qGuest);
+        snapshotGuest.forEach((docSnap) => {
+          ordersMap.set(docSnap.id, parseFirestoreOrderDoc(docSnap.id, docSnap.data()));
+        });
+      }
 
-    // 2. Fetch locally saved customer order IDs from /orders/{orderId}
-    const localIds = getLocalOrderIds();
-    await Promise.all(
-      localIds.map(async (id) => {
-        if (!ordersMap.has(id)) {
-          const ord = await fetchOrderByIdFromFirestore(id);
-          if (ord) ordersMap.set(id, ord);
-        }
-      })
-    );
+      // Also retrieve this device's locally saved order IDs
+      const localIds = getLocalOrderIds();
+      await Promise.all(
+        localIds.map(async (id) => {
+          if (!ordersMap.has(id)) {
+            const ord = await fetchOrderByIdFromFirestore(id);
+            if (ord) {
+              // Ensure order either matches this guest or was placed anonymously on this device
+              if (!ord.telegramUser?.id || ord.guestId === currentGuestId) {
+                ordersMap.set(id, ord);
+              }
+            }
+          }
+        })
+      );
+    }
 
     const results = Array.from(ordersMap.values());
     results.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return results;
   } catch (err) {
-    console.error('Error fetching orders from Firestore:', err);
+    console.error('Error fetching customer orders from Firestore:', err);
     return [];
   }
 }
 
 /**
- * Real-time onSnapshot listener for customer orders.
- * Automatically synchronizes changes from Admin (e.g. pending -> accepted -> processing -> completed)
+ * Legacy wrapper for fetchUserOrdersFromFirestore
  */
-export function subscribeToUserOrders(
+export async function fetchUserOrdersFromFirestore(
   telegramUserId: number,
+  guestId?: string
+): Promise<OrderItem[]> {
+  return fetchCustomerOrdersFromFirestore({
+    telegramUserId,
+    guestId: guestId || getOrCreateGuestId(),
+    isGuest: !telegramUserId || telegramUserId <= 0
+  });
+}
+
+/**
+ * Real-time onSnapshot listener for customer orders.
+ * Automatically synchronizes changes from Admin in real time strictly for the active customer identity.
+ */
+export function subscribeToCustomerOrders(
+  identity: CustomerIdentityParams,
   onOrdersUpdated: (orders: OrderItem[]) => void
 ): Unsubscribe {
   const unsubscribers: Unsubscribe[] = [];
@@ -265,11 +323,11 @@ export function subscribeToUserOrders(
     onOrdersUpdated(sorted);
   };
 
-  // 1. Listen to Telegram user orders collection
-  if (telegramUserId) {
+  // 1. Real Telegram user listener
+  if (!identity.isGuest && identity.telegramUserId && identity.telegramUserId > 0) {
     const q = query(
       collection(db, ORDERS_COLLECTION),
-      where('telegramUser.id', '==', telegramUserId)
+      where('telegramUser.id', '==', identity.telegramUserId)
     );
 
     const unsubQuery = onSnapshot(
@@ -281,34 +339,78 @@ export function subscribeToUserOrders(
         emitUpdatedOrders();
       },
       (error) => {
-        console.warn('User orders onSnapshot query listener error:', error);
+        console.warn('Telegram user orders onSnapshot error:', error);
       }
     );
     unsubscribers.push(unsubQuery);
-  }
+  } else {
+    // 2. Web Guest device listener
+    const currentGuestId = identity.guestId || getOrCreateGuestId();
+    if (currentGuestId) {
+      const qGuest = query(
+        collection(db, ORDERS_COLLECTION),
+        where('guestId', '==', currentGuestId)
+      );
 
-  // 2. Listen to each locally saved customer order document in /orders/{orderId}
-  const localIds = getLocalOrderIds();
-  localIds.forEach((id) => {
-    const docRef = doc(db, ORDERS_COLLECTION, id);
-    const unsubDoc = onSnapshot(
-      docRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          ordersMap.set(docSnap.id, parseFirestoreOrderDoc(docSnap.id, docSnap.data()));
+      const unsubGuest = onSnapshot(
+        qGuest,
+        (snapshot) => {
+          snapshot.forEach((docSnap) => {
+            ordersMap.set(docSnap.id, parseFirestoreOrderDoc(docSnap.id, docSnap.data()));
+          });
           emitUpdatedOrders();
+        },
+        (error) => {
+          console.warn('Guest orders onSnapshot error:', error);
         }
-      },
-      (error) => {
-        console.warn(`Order doc onSnapshot listener error for ${id}:`, error);
-      }
-    );
-    unsubscribers.push(unsubDoc);
-  });
+      );
+      unsubscribers.push(unsubGuest);
+    }
+
+    // Also listen to this device's locally saved orders
+    const localIds = getLocalOrderIds();
+    localIds.forEach((id) => {
+      const docRef = doc(db, ORDERS_COLLECTION, id);
+      const unsubDoc = onSnapshot(
+        docRef,
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const parsed = parseFirestoreOrderDoc(docSnap.id, docSnap.data());
+            if (!parsed.telegramUser?.id || parsed.guestId === currentGuestId) {
+              ordersMap.set(docSnap.id, parsed);
+              emitUpdatedOrders();
+            }
+          }
+        },
+        (error) => {
+          console.warn(`Order doc onSnapshot listener error for ${id}:`, error);
+        }
+      );
+      unsubscribers.push(unsubDoc);
+    });
+  }
 
   return () => {
     unsubscribers.forEach((unsub) => unsub());
   };
+}
+
+/**
+ * Legacy wrapper for subscribeToUserOrders
+ */
+export function subscribeToUserOrders(
+  telegramUserId: number,
+  onOrdersUpdated: (orders: OrderItem[]) => void,
+  guestId?: string
+): Unsubscribe {
+  return subscribeToCustomerOrders(
+    {
+      telegramUserId,
+      guestId: guestId || getOrCreateGuestId(),
+      isGuest: !telegramUserId || telegramUserId <= 0
+    },
+    onOrdersUpdated
+  );
 }
 
 /**
@@ -333,4 +435,5 @@ export function subscribeToOrder(
     }
   );
 }
+
 

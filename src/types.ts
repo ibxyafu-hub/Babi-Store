@@ -85,7 +85,9 @@ export interface OrderItem {
   paymentStatus: 'Paid' | 'Unpaid' | 'Under Review';
   orderStatus: OrderStatus;
   customerInfo: Record<string, string>;
-  telegramUser: {
+  guestId?: string;
+  customerType?: 'telegram' | 'guest';
+  telegramUser?: {
     id: number;
     username: string;
     firstName: string;
@@ -104,6 +106,8 @@ export interface TelegramUser {
   photo_url?: string;
   language_code?: string;
   is_premium?: boolean;
+  is_guest?: boolean;
+  guest_id?: string;
 }
 
 export interface StoreSubCategory {

@@ -39,7 +39,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
   onClose,
   onOrderSuccess
 }) => {
-  const { user, haptic } = useTelegram();
+  const { user, guestId, isGuest, haptic } = useTelegram();
 
   const [currentStep, setCurrentStep] = useState<OrderStep>('details');
   const [customerInfo, setCustomerInfo] = useState<Record<string, string>>(() => {
@@ -147,12 +147,14 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
           payment_gateway: activePaymentMethod.name,
           account_number: activePaymentMethod.accountNumber
         },
-        telegramUser: {
+        telegramUser: !isGuest && user.id > 0 ? {
           id: user.id,
           username: user.username || 'user',
           firstName: user.first_name,
           lastName: user.last_name
-        },
+        } : undefined,
+        guestId,
+        isGuest,
         notes: `Order created via BABI STORE Mini App.`
       });
 

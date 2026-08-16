@@ -62,50 +62,80 @@ declare global {
   }
 }
 
+const GUEST_ID_KEY = 'babi_store_guest_uuid';
+
+/**
+ * Get existing persistent guest ID or generate a new unique random UUID for this device/browser
+ */
+export function getOrCreateGuestId(): string {
+  try {
+    const existing = localStorage.getItem(GUEST_ID_KEY);
+    if (existing && existing.startsWith('guest_')) {
+      return existing;
+    }
+    const newId = `guest_${
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+    }`;
+    localStorage.setItem(GUEST_ID_KEY, newId);
+    return newId;
+  } catch (e) {
+    return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+  }
+}
+
 interface TelegramContextType {
   user: TelegramUser;
+  guestId: string;
   isInsideTelegram: boolean;
+  isGuest: boolean;
   haptic: (type?: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error') => void;
   openTelegramLink: (url: string) => void;
   setUser: (user: TelegramUser) => void;
   switchDemoUser: (index: number) => void;
 }
 
-const DEMO_USERS: TelegramUser[] = [
+// Development preview users for testing multi-user isolation
+const TEST_TELEGRAM_USERS: TelegramUser[] = [
   {
-    id: 582910482,
-    username: 'Raf_babi',
-    first_name: 'Raf',
-    last_name: 'Babi',
+    id: 100000001,
+    username: 'tester_alpha',
+    first_name: 'Tester',
+    last_name: 'Alpha',
     is_premium: true,
-    photo_url: '/babistorelogo.jpg'
+    is_guest: false
   },
   {
-    id: 918237461,
-    username: 'sarah_stars',
-    first_name: 'Sarah',
-    last_name: 'Chen',
+    id: 100000002,
+    username: 'tester_beta',
+    first_name: 'Tester',
+    last_name: 'Beta',
     is_premium: false,
-    photo_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
-  },
-  {
-    id: 382910475,
-    username: 'david_crypto',
-    first_name: 'David',
-    last_name: 'Miller',
-    is_premium: true,
-    photo_url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=200&q=80'
+    is_guest: false
   }
 ];
 
 const TelegramContext = createContext<TelegramContextType | undefined>(undefined);
 
 export const TelegramProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<TelegramUser>(DEMO_USERS[0]);
+  const [guestId, setGuestId] = useState<string>(() => getOrCreateGuestId());
   const [isInsideTelegram, setIsInsideTelegram] = useState(false);
+  const [isGuest, setIsGuest] = useState(true);
+  const [user, setUser] = useState<TelegramUser>(() => ({
+    id: 0,
+    username: '',
+    first_name: 'Guest',
+    last_name: '',
+    is_guest: true,
+    guest_id: getOrCreateGuestId()
+  }));
 
   useEffect(() => {
     try {
+      const gid = getOrCreateGuestId();
+      setGuestId(gid);
+
       const tg = window.Telegram?.WebApp;
       if (tg) {
         tg.ready();
@@ -115,15 +145,21 @@ export const TelegramProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           tg.setBackgroundColor('#090a0f');
         } catch (_) {}
 
-        if (tg.initDataUnsafe?.user) {
-          setUser(tg.initDataUnsafe.user);
+        // Check if opened with a valid Telegram user session
+        if (tg.initDataUnsafe?.user?.id) {
+          const realUser: TelegramUser = {
+            ...tg.initDataUnsafe.user,
+            is_guest: false
+          };
+          setUser(realUser);
           setIsInsideTelegram(true);
+          setIsGuest(false);
         } else if (tg.initData) {
           setIsInsideTelegram(true);
         }
       }
     } catch (e) {
-      console.warn('Telegram WebApp init check:', e);
+      console.warn('Telegram WebApp init check error:', e);
     }
   }, []);
 
@@ -157,8 +193,9 @@ export const TelegramProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const switchDemoUser = (index: number) => {
-    const selected = DEMO_USERS[index % DEMO_USERS.length];
+    const selected = TEST_TELEGRAM_USERS[index % TEST_TELEGRAM_USERS.length];
     setUser(selected);
+    setIsGuest(false);
     haptic('medium');
   };
 
@@ -166,7 +203,9 @@ export const TelegramProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <TelegramContext.Provider
       value={{
         user,
+        guestId,
         isInsideTelegram,
+        isGuest,
         haptic,
         openTelegramLink,
         setUser,
@@ -185,3 +224,4 @@ export const useTelegram = () => {
   }
   return context;
 };
+

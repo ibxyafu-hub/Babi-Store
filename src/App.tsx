@@ -26,10 +26,13 @@ import {
   ProductCategory
 } from './types';
 import { INITIAL_PRODUCTS, STORE_CATEGORIES } from './data/catalog';
-import { fetchUserOrdersFromFirestore, subscribeToUserOrders } from './lib/ordersService';
+import {
+  fetchCustomerOrdersFromFirestore,
+  subscribeToCustomerOrders
+} from './lib/ordersService';
 
 function MainStoreApp() {
-  const { user } = useTelegram();
+  const { user, guestId, isGuest } = useTelegram();
 
   // Navigation and Modes
   const [activeTab, setActiveTab] = useState<NavTab>('home');
@@ -80,58 +83,53 @@ function MainStoreApp() {
   const fetchOrders = useCallback(async () => {
     setIsLoadingOrders(true);
     try {
-      // Primary: Fetch live persistent orders from Firestore
-      const firestoreOrders = await fetchUserOrdersFromFirestore(user.id);
-      if (firestoreOrders && firestoreOrders.length > 0) {
-        setOrders(firestoreOrders);
-        return;
-      }
-
-      // If user has no orders yet in Firestore, check API/fallback
-      try {
-        const res = await fetch(`/api/orders?telegramUserId=${user.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && Array.isArray(data.orders)) {
-            setOrders(data.orders);
-          }
-        }
-      } catch {
-        // Fallback silently
-      }
+      // Primary: Fetch live persistent orders strictly for this customer identity
+      const firestoreOrders = await fetchCustomerOrdersFromFirestore({
+        telegramUserId: user.id,
+        guestId,
+        isGuest
+      });
+      setOrders(firestoreOrders);
     } catch (e) {
       console.warn('Error fetching orders from Firestore:', e);
     } finally {
       setIsLoadingOrders(false);
     }
-  }, [user.id]);
+  }, [user.id, guestId, isGuest]);
 
   useEffect(() => {
     fetchProductsAndCategories();
     fetchOrders();
 
-    // Setup real-time listener to Firestore
-    const unsubscribe = subscribeToUserOrders(user.id, (updatedOrders) => {
-      setOrders(updatedOrders);
+    // Setup real-time listener strictly for this customer identity
+    const unsubscribe = subscribeToCustomerOrders(
+      {
+        telegramUserId: user.id,
+        guestId,
+        isGuest
+      },
+      (updatedOrders) => {
+        setOrders(updatedOrders);
 
-      // Keep open modals synchronized with latest order status in real time
-      setSelectedDetailOrder((curr) => {
-        if (!curr) return null;
-        const matching = updatedOrders.find((o) => o.orderId === curr.orderId);
-        return matching || curr;
-      });
+        // Keep open modals synchronized with latest order status in real time
+        setSelectedDetailOrder((curr) => {
+          if (!curr) return null;
+          const matching = updatedOrders.find((o) => o.orderId === curr.orderId);
+          return matching || curr;
+        });
 
-      setSuccessOrder((curr) => {
-        if (!curr) return null;
-        const matching = updatedOrders.find((o) => o.orderId === curr.orderId);
-        return matching || curr;
-      });
-    });
+        setSuccessOrder((curr) => {
+          if (!curr) return null;
+          const matching = updatedOrders.find((o) => o.orderId === curr.orderId);
+          return matching || curr;
+        });
+      }
+    );
 
     return () => {
       unsubscribe();
     };
-  }, [user.id, fetchOrders]);
+  }, [user.id, guestId, isGuest, fetchOrders]);
 
   // Tab navigation helper with history tracking
   const navigateToTab = (tab: NavTab) => {

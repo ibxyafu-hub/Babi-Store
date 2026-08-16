@@ -36,7 +36,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onToggleBotMode,
   onBack
 }) => {
-  const { user, isInsideTelegram, haptic, switchDemoUser } = useTelegram();
+  const { user, guestId, isInsideTelegram, isGuest, haptic, switchDemoUser } = useTelegram();
   const [copiedId, setCopiedId] = useState(false);
 
   const totalOrders = orders.length;
@@ -47,7 +47,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const totalSpent = orders.reduce((sum, o) => sum + o.totalPrice, 0);
 
   const handleCopyUserId = () => {
-    navigator.clipboard.writeText(user.id.toString());
+    const textToCopy = isGuest ? guestId : user.id.toString();
+    navigator.clipboard.writeText(textToCopy);
     setCopiedId(true);
     haptic('success');
     setTimeout(() => setCopiedId(false), 2000);
@@ -73,10 +74,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         )}
         <div>
           <h1 className="text-xl font-extrabold text-white tracking-tight">
-            Telegram Profile
+            {isGuest ? 'Customer Profile' : 'Telegram Profile'}
           </h1>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
-            Connected via Telegram WebApp authentication
+            {isGuest
+              ? 'Connected via Secure Device Guest Session'
+              : 'Connected via Telegram WebApp authentication'}
           </p>
         </div>
       </div>
@@ -93,7 +96,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               />
             ) : (
               <div className="w-14 h-14 rounded-2xl bg-[#E5092F]/15 border border-[#E5092F]/30 text-[#E5092F] font-extrabold text-xl flex items-center justify-center">
-                {user.first_name.charAt(0)}
+                {isGuest ? 'G' : user.first_name.charAt(0)}
               </div>
             )}
             {user.is_premium && (
@@ -106,7 +109,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <h2 className="text-base font-extrabold text-white truncate">
-                {user.first_name} {user.last_name || ''}
+                {isGuest ? 'Guest Customer' : `${user.first_name} ${user.last_name || ''}`}
               </h2>
               {user.is_premium && (
                 <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30">
@@ -116,18 +119,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
 
             <p className="text-xs text-[#E5092F] font-medium">
-              {user.username ? `@${user.username}` : 'No username set'}
+              {isGuest
+                ? 'Web Browser Session'
+                : user.username
+                ? `@${user.username}`
+                : 'Telegram User'}
             </p>
 
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-[11px] text-[#A1A1AA] font-mono">
-                ID: {user.id}
+              <span className="text-[11px] text-[#A1A1AA] font-mono truncate max-w-[170px]">
+                {isGuest ? `Guest: ${guestId.slice(0, 14)}...` : `ID: ${user.id}`}
               </span>
               <button
                 id="btn-copy-user-id"
                 onClick={handleCopyUserId}
                 className="text-[#A1A1AA] hover:text-white p-0.5"
-                title="Copy Telegram User ID"
+                title={isGuest ? 'Copy Guest ID' : 'Copy Telegram User ID'}
               >
                 {copiedId ? (
                   <Check className="w-3 h-3 text-emerald-400" />
@@ -143,10 +150,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#111111] border border-[#27272A] text-[11px]">
           <span className="text-[#A1A1AA] flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            Telegram Identity Verified
+            {isGuest ? 'Isolated Device Storage' : 'Telegram Identity Verified'}
           </span>
           <span className="text-neutral-300 font-mono text-[10px]">
-            {isInsideTelegram ? 'Telegram Native' : 'Simulator Mode'}
+            {isInsideTelegram ? 'Telegram Native' : isGuest ? 'Web Guest' : 'Simulator Mode'}
           </span>
         </div>
       </div>

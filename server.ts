@@ -6,73 +6,7 @@ import { OrderItem, OrderStatus, Product } from './src/types.ts';
 
 // In-memory mock database state (ready to connect to PostgreSQL / Firestore)
 let productsDatabase: Product[] = [...INITIAL_PRODUCTS];
-let ordersDatabase: OrderItem[] = [
-  {
-    orderId: 'BABI-88219',
-    productId: 'efootball-android-user',
-    productName: 'eFootball For Android User',
-    productCategory: 'gaming',
-    productSubCategory: 'gaming-topup',
-    productImage: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
-    packageId: 'ef-and-1050',
-    packageName: '1,050 Coins',
-    packageUnit: 'Coins',
-    quantity: 1,
-    amount: 1050,
-    totalPrice: 630,
-    paymentMethod: 'Telebirr',
-    paymentAccount: 'Kirubel Wondwosen (0989678770)',
-    transactionId: 'FT26081498102',
-    paymentStatus: 'Paid',
-    orderStatus: 'Completed',
-    customerInfo: {
-      user_id: '948-284-102',
-      server_region: 'Global / Asia',
-      transaction_id: 'FT26081498102',
-      payment_gateway: 'Telebirr'
-    },
-    telegramUser: {
-      id: 582910482,
-      username: 'Raf_babi',
-      firstName: 'Raf'
-    },
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 4.9).toISOString(),
-    notes: 'Direct crediting completed in 1m 12s'
-  },
-  {
-    orderId: 'BABI-49120',
-    productId: 'telegram-stars',
-    productName: 'Telegram Stars',
-    productCategory: 'social',
-    productSubCategory: 'social-services',
-    productImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-    packageId: 'tg-star-500',
-    packageName: '500 Stars',
-    packageUnit: 'Stars',
-    quantity: 1,
-    amount: 500,
-    totalPrice: 1450,
-    paymentMethod: 'Commercial Bank Of Ethiopia',
-    paymentAccount: 'Kirubel Wondwosen (1000367064297)',
-    transactionId: 'TXN-CBE-994821',
-    paymentStatus: 'Paid',
-    orderStatus: 'Processing',
-    customerInfo: {
-      telegram_username: '@Raf_babi',
-      transaction_id: 'TXN-CBE-994821',
-      payment_gateway: 'Commercial Bank Of Ethiopia'
-    },
-    telegramUser: {
-      id: 582910482,
-      username: 'Raf_babi',
-      firstName: 'Raf'
-    },
-    createdAt: new Date(Date.now() - 60000 * 12).toISOString(),
-    updatedAt: new Date(Date.now() - 60000 * 12).toISOString(),
-    notes: 'Transfer dispatch queued'
-  }
-];
+let ordersDatabase: OrderItem[] = [];
 
 function generateOrderId(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -213,10 +147,12 @@ async function startServer() {
         paymentStatus: 'Paid',
         orderStatus: 'Pending',
         customerInfo: customerInfo || {},
+        guestId: req.body.guestId || undefined,
+        customerType: telegramUser && telegramUser.id > 0 ? 'telegram' : 'guest',
         telegramUser: telegramUser || {
-          id: 582910482,
-          username: 'telegram_user',
-          firstName: 'User'
+          id: 0,
+          username: '',
+          firstName: 'Customer'
         },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -224,15 +160,6 @@ async function startServer() {
       };
 
       ordersDatabase.unshift(newOrder);
-
-      // Auto simulate progress for realistic experience: Pending -> Confirmed after 15s
-      setTimeout(() => {
-        const ord = ordersDatabase.find((o) => o.orderId === orderId);
-        if (ord && ord.orderStatus === 'Pending') {
-          ord.orderStatus = 'Confirmed';
-          ord.updatedAt = new Date().toISOString();
-        }
-      }, 12000);
 
       res.status(201).json({
         success: true,
@@ -245,14 +172,16 @@ async function startServer() {
 
   // Get Orders
   app.get('/api/orders', (req, res) => {
-    const { telegramUserId, status, search } = req.query;
+    const { telegramUserId, guestId, status, search } = req.query;
     let list = [...ordersDatabase];
 
     if (telegramUserId) {
       const uid = Number(telegramUserId);
-      if (!isNaN(uid)) {
-        list = list.filter((o) => o.telegramUser.id === uid);
+      if (!isNaN(uid) && uid > 0) {
+        list = list.filter((o) => o.telegramUser?.id === uid);
       }
+    } else if (guestId && typeof guestId === 'string') {
+      list = list.filter((o) => o.guestId === guestId);
     }
 
     if (status && status !== 'all') {
@@ -333,9 +262,10 @@ async function startServer() {
 
       case 'my_orders':
       case '/orders': {
-        const userOrders = ordersDatabase.filter(
-          (o) => o.telegramUser.id === (user?.id || 582910482)
-        );
+        const userId = user?.id;
+        const userOrders = userId && userId > 0
+          ? ordersDatabase.filter((o) => o.telegramUser?.id === userId)
+          : [];
         if (userOrders.length === 0) {
           res.json({
             success: true,
