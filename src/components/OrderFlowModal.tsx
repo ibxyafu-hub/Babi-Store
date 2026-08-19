@@ -147,11 +147,15 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
           payment_gateway: activePaymentMethod.name,
           account_number: activePaymentMethod.accountNumber
         },
+        telegramId: !isGuest && user.id > 0 ? user.id : undefined,
+        telegramUsername: !isGuest && user.id > 0 ? (user.username || '') : undefined,
+        telegramFirstName: !isGuest && user.id > 0 ? user.first_name : undefined,
+        telegramLastName: !isGuest && user.id > 0 ? (user.last_name || '') : undefined,
         telegramUser: !isGuest && user.id > 0 ? {
           id: user.id,
-          username: user.username || 'user',
+          username: user.username || '',
           firstName: user.first_name,
-          lastName: user.last_name
+          lastName: user.last_name || ''
         } : undefined,
         guestId,
         isGuest,

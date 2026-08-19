@@ -145,10 +145,30 @@ export const TelegramProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           tg.setBackgroundColor('#090a0f');
         } catch (_) {}
 
+        // Extract user from initDataUnsafe.user or fallback to parsing initData string
+        let tgUser = tg.initDataUnsafe?.user;
+        if (!tgUser && tg.initData) {
+          try {
+            const params = new URLSearchParams(tg.initData);
+            const userJson = params.get('user');
+            if (userJson) {
+              tgUser = JSON.parse(userJson);
+            }
+          } catch (parseErr) {
+            console.warn('Could not parse user from Telegram initData:', parseErr);
+          }
+        }
+
         // Check if opened with a valid Telegram user session
-        if (tg.initDataUnsafe?.user?.id) {
+        if (tgUser && tgUser.id) {
           const realUser: TelegramUser = {
-            ...tg.initDataUnsafe.user,
+            id: tgUser.id,
+            username: tgUser.username ? tgUser.username.trim() : '',
+            first_name: tgUser.first_name ? tgUser.first_name.trim() : '',
+            last_name: tgUser.last_name ? tgUser.last_name.trim() : '',
+            photo_url: tgUser.photo_url,
+            language_code: tgUser.language_code,
+            is_premium: Boolean(tgUser.is_premium),
             is_guest: false
           };
           setUser(realUser);

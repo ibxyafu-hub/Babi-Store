@@ -84,9 +84,14 @@ export interface OrderItem {
   transactionId?: string;
   paymentStatus: 'Paid' | 'Unpaid' | 'Under Review';
   orderStatus: OrderStatus;
+  status?: string;
   customerInfo: Record<string, string>;
   guestId?: string;
   customerType?: 'telegram' | 'guest';
+  telegramId?: number | string | null;
+  telegramUsername?: string;
+  telegramFirstName?: string;
+  telegramLastName?: string;
   telegramUser?: {
     id: number;
     username: string;

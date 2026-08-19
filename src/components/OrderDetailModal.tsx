@@ -195,6 +195,52 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             </div>
           </div>
 
+          {/* Customer Profile & Identity Section */}
+          <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-2 text-xs">
+            <span className="text-xs font-bold text-neutral-300 flex items-center gap-1.5">
+              <span>👤</span> Customer
+            </span>
+
+            <div className="flex justify-between py-1 border-b border-[#27272A] items-center">
+              <span className="text-[#A1A1AA]">Telegram Username</span>
+              <span className={`font-mono font-bold ${order.telegramUsername || order.telegramUser?.username ? 'text-white' : 'text-neutral-500 italic'}`}>
+                {order.telegramUsername || (order.telegramUser?.username ? `@${order.telegramUser.username}` : 'No Telegram username')}
+              </span>
+            </div>
+
+            <div className="flex justify-between py-1 border-b border-[#27272A] items-center">
+              <span className="text-[#A1A1AA]">Telegram ID</span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-mono text-white">
+                  {order.telegramId || (order.telegramUser?.id && order.telegramUser.id > 0 ? order.telegramUser.id : (order.guestId ? `Guest (${order.guestId.slice(0, 10)}...)` : 'N/A'))}
+                </span>
+                {(order.telegramId || (order.telegramUser?.id && order.telegramUser.id > 0)) && (
+                  <button
+                    onClick={() => handleCopy(String(order.telegramId || order.telegramUser?.id))}
+                    className="text-[#A1A1AA] hover:text-white p-0.5"
+                    title="Copy Telegram ID"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-between py-1 border-b border-[#27272A]">
+              <span className="text-[#A1A1AA]">First Name</span>
+              <span className="text-white font-medium">
+                {order.telegramFirstName || order.telegramUser?.firstName || (order.guestId ? 'Guest Customer' : 'N/A')}
+              </span>
+            </div>
+
+            <div className="flex justify-between py-1 border-b border-[#27272A]">
+              <span className="text-[#A1A1AA]">Last Name</span>
+              <span className="text-white font-medium">
+                {order.telegramLastName || order.telegramUser?.lastName || 'None'}
+              </span>
+            </div>
+          </div>
+
           {/* Customer & Delivery Information */}
           <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-2 text-xs">
             <span className="text-xs font-bold text-neutral-300 block">
@@ -216,13 +262,6 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 </div>
               </div>
             ))}
-
-            <div className="flex justify-between py-1 border-b border-[#27272A]">
-              <span className="text-[#A1A1AA]">Telegram Account</span>
-              <span className="font-mono text-white">
-                @{order.telegramUser.username || order.telegramUser.id}
-              </span>
-            </div>
 
             <div className="flex justify-between py-1 border-b border-[#27272A]">
               <span className="text-[#A1A1AA]">Payment Gateway</span>

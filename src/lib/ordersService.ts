@@ -84,6 +84,15 @@ export function parseFirestoreOrderDoc(id: string, data: any): OrderItem {
   const rawStatus = data.status || data.orderStatus || 'Pending';
   const displayStatus = normalizeOrderStatus(rawStatus);
 
+  const rawTgUsername = data.telegramUsername || data.telegramUser?.username || '';
+  const formattedTgUsername = rawTgUsername
+    ? (rawTgUsername.startsWith('@') ? rawTgUsername : `@${rawTgUsername}`)
+    : '';
+
+  const tgId = data.telegramId || data.telegramUser?.id || (data.customerType === 'telegram' ? data.userId : undefined);
+  const tgFirstName = data.telegramFirstName || data.telegramUser?.firstName || data.telegramUser?.first_name || '';
+  const tgLastName = data.telegramLastName || data.telegramUser?.lastName || data.telegramUser?.last_name || '';
+
   return {
     orderId: data.orderId || id,
     productId: data.productId || '',
@@ -102,10 +111,20 @@ export function parseFirestoreOrderDoc(id: string, data: any): OrderItem {
     transactionId: data.transactionId || data.customerInfo?.transaction_id,
     paymentStatus: data.paymentStatus || 'Paid',
     orderStatus: displayStatus,
+    status: rawStatus,
     customerInfo: data.customerInfo || {},
     guestId: data.guestId || undefined,
-    customerType: data.customerType || (data.telegramUser?.id ? 'telegram' : 'guest'),
-    telegramUser: data.telegramUser || { id: 0, username: '', firstName: 'Customer' },
+    customerType: data.customerType || (tgId ? 'telegram' : 'guest'),
+    telegramId: tgId ? Number(tgId) || tgId : null,
+    telegramUsername: formattedTgUsername,
+    telegramFirstName: tgFirstName,
+    telegramLastName: tgLastName,
+    telegramUser: {
+      id: Number(tgId) || 0,
+      username: formattedTgUsername ? formattedTgUsername.replace(/^@/, '') : '',
+      firstName: tgFirstName || 'Customer',
+      lastName: tgLastName || ''
+    },
     createdAt: data.createdAt || new Date().toISOString(),
     updatedAt: data.updatedAt || new Date().toISOString(),
     notes: data.notes
@@ -133,6 +152,10 @@ export interface CreateOrderParams {
   paymentAccount?: string;
   transactionId: string;
   customerInfo: Record<string, string>;
+  telegramId?: number | string | null;
+  telegramUsername?: string;
+  telegramFirstName?: string;
+  telegramLastName?: string;
   telegramUser?: {
     id: number;
     username?: string;
@@ -153,12 +176,27 @@ export async function createFirestoreOrder(params: CreateOrderParams): Promise<O
   const totalPrice = Number((params.selectedPackage.price * params.quantity).toFixed(2));
   const amount = (params.selectedPackage.amount || 1) * params.quantity;
 
+  const rawTgId = params.telegramId || params.telegramUser?.id;
   const isRealTelegramUser = Boolean(
-    !params.isGuest && params.telegramUser && params.telegramUser.id > 0
+    !params.isGuest && rawTgId && Number(rawTgId) > 0
   );
   const currentGuestId = isRealTelegramUser
     ? undefined
     : params.guestId || getOrCreateGuestId();
+
+  const telegramId = isRealTelegramUser ? Number(rawTgId) : null;
+  const rawUsername = isRealTelegramUser
+    ? (params.telegramUsername || params.telegramUser?.username || '').trim()
+    : '';
+  const telegramUsername = rawUsername
+    ? (rawUsername.startsWith('@') ? rawUsername : `@${rawUsername}`)
+    : '';
+  const telegramFirstName = isRealTelegramUser
+    ? (params.telegramFirstName || params.telegramUser?.firstName || '').trim()
+    : '';
+  const telegramLastName = isRealTelegramUser
+    ? (params.telegramLastName || params.telegramUser?.lastName || '').trim()
+    : '';
 
   const orderData: any = {
     orderId,
@@ -187,12 +225,17 @@ export async function createFirestoreOrder(params: CreateOrderParams): Promise<O
     },
     guestId: currentGuestId || null,
     customerType: isRealTelegramUser ? 'telegram' : 'guest',
+    // Root level fields for Admin Orders Dashboard
+    telegramId: isRealTelegramUser ? telegramId : null,
+    telegramUsername: isRealTelegramUser ? telegramUsername : '',
+    telegramFirstName: isRealTelegramUser ? telegramFirstName : '',
+    telegramLastName: isRealTelegramUser ? telegramLastName : '',
     telegramUser: isRealTelegramUser
       ? {
-          id: params.telegramUser!.id,
-          username: params.telegramUser!.username || '',
-          firstName: params.telegramUser!.firstName || 'Customer',
-          lastName: params.telegramUser!.lastName || ''
+          id: telegramId!,
+          username: telegramUsername ? telegramUsername.replace(/^@/, '') : '',
+          firstName: telegramFirstName || 'Customer',
+          lastName: telegramLastName || ''
         }
       : {
           id: 0,
