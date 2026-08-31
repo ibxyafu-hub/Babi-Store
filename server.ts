@@ -1,269 +1,20 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import { INITIAL_PRODUCTS, STORE_CATEGORIES, PAYMENT_METHODS, STORE_CONFIG } from './src/data/catalog.ts';
+import { OrderItem, OrderStatus, Product } from './src/types.ts';
 
-dotenv.config();
+// In-memory mock database state (ready to connect to PostgreSQL / Firestore)
+let productsDatabase: Product[] = [...INITIAL_PRODUCTS];
+let ordersDatabase: OrderItem[] = [];
 
-interface InquiryPayload {
-  name: string;
-  brand?: string;
-  email: string;
-  service?: string;
-  services?: string[];
-  message?: string;
-  notes?: string;
-}
-
-interface DeliveryResult {
-  success: boolean;
-  message?: string;
-  method?: string;
-  error?: string;
-}
-
-const DESTINATION_EMAIL = 'apexcreativesaio@gmail.com';
-
-async function dispatchEmail(payload: {
-  service: string;
-  name: string;
-  brand: string;
-  email: string;
-  notes: string;
-}): Promise<DeliveryResult> {
-  const { service, name, brand, email, notes } = payload;
-  const timestamp = new Date().toLocaleString('en-US', {
-    timeZone: 'UTC',
-    dateStyle: 'full',
-    timeStyle: 'long',
-  });
-
-  const subject = `APEX CREATIVES — NEW PROJECT REQUEST [${service}]`;
-
-  const plainText = `APEX CREATIVES — NEW PROJECT REQUEST
-
-Service:
-${service}
-
-Client Name:
-${name}
-
-Brand / Business Name:
-${brand}
-
-Client Email:
-${email}
-
-Project Notes:
-${notes}
-
-Submitted: ${timestamp} UTC
-`;
-
-  const htmlBody = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0c0c0c; color: #ffffff; margin: 0; padding: 24px; }
-          .container { max-width: 600px; margin: 0 auto; background-color: #121212; border: 1px solid #262626; border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-          .header { border-bottom: 2px solid #FF2B2B; padding-bottom: 16px; margin-bottom: 24px; }
-          .title { font-size: 20px; font-weight: 800; color: #FF2B2B; letter-spacing: 0.05em; text-transform: uppercase; margin: 0; }
-          .subtitle { font-size: 12px; color: #888888; font-family: monospace; margin-top: 4px; }
-          .field-group { margin-bottom: 18px; }
-          .label { font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.1em; color: #A8A8A8; font-weight: 700; margin-bottom: 4px; }
-          .value { font-size: 15px; color: #FFFFFF; font-weight: 500; }
-          .notes-box { background-color: #1A1A1A; border: 1px solid #333333; border-radius: 10px; padding: 16px; margin-top: 6px; font-size: 14px; line-height: 1.6; color: #EDEDED; white-space: pre-wrap; }
-          .footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid #262626; font-size: 11px; color: #666666; font-family: monospace; text-align: center; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1 class="title">APEX CREATIVES — NEW PROJECT REQUEST</h1>
-            <div class="subtitle">Direct Client Project Inquiry</div>
-          </div>
-
-          <div class="field-group">
-            <div class="label">Service:</div>
-            <div class="value">${service}</div>
-          </div>
-
-          <div class="field-group">
-            <div class="label">Client Name:</div>
-            <div class="value">${name}</div>
-          </div>
-
-          <div class="field-group">
-            <div class="label">Brand / Business Name:</div>
-            <div class="value">${brand}</div>
-          </div>
-
-          <div class="field-group">
-            <div class="label">Client Email:</div>
-            <div class="value"><a href="mailto:${email}" style="color: #FF2B2B; text-decoration: none;">${email}</a></div>
-          </div>
-
-          <div class="field-group">
-            <div class="label">Project Notes:</div>
-            <div class="notes-box">${notes}</div>
-          </div>
-
-          <div class="footer">
-            Submitted from Apex Creatives Portfolio Website • ${timestamp} UTC
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
-
-  // 1. DIRECT GMAIL / SMTP VIA NODEMAILER (if env variables are configured)
-  const gmailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
-  const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER;
-  if (gmailPass && (smtpUser || process.env.GMAIL_APP_PASSWORD)) {
-    try {
-      const transporter = process.env.GMAIL_APP_PASSWORD
-        ? nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: smtpUser || DESTINATION_EMAIL,
-              pass: gmailPass,
-            },
-          })
-        : nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: Number(process.env.SMTP_PORT) === 465,
-            auth: {
-              user: smtpUser,
-              pass: gmailPass,
-            },
-          });
-
-      await transporter.sendMail({
-        from: `"Apex Creatives Inquiry" <${smtpUser || DESTINATION_EMAIL}>`,
-        to: DESTINATION_EMAIL,
-        replyTo: email,
-        subject,
-        text: plainText,
-        html: htmlBody,
-      });
-
-      console.log('✅ Email successfully dispatched via SMTP/Nodemailer');
-      return { success: true, message: 'Message sent via direct SMTP', method: 'smtp' };
-    } catch (smtpErr: any) {
-      console.error('⚠️ SMTP send error, falling back to relay:', smtpErr?.message || smtpErr);
-    }
+function generateOrderId(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let result = '';
+  for (let i = 0; i < 5; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-
-  // 2. RESEND API (if RESEND_API_KEY is configured)
-  if (process.env.RESEND_API_KEY) {
-    try {
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: process.env.RESEND_FROM || 'Apex Creatives <onboarding@resend.dev>',
-          to: [DESTINATION_EMAIL],
-          reply_to: email,
-          subject,
-          text: plainText,
-          html: htmlBody,
-        }),
-      });
-
-      if (resendRes.ok) {
-        console.log('✅ Email successfully dispatched via Resend API');
-        return { success: true, message: 'Message sent via Resend API', method: 'resend' };
-      } else {
-        const resText = await resendRes.text();
-        console.error('⚠️ Resend API returned error:', resText);
-      }
-    } catch (resendErr) {
-      console.error('⚠️ Resend API connection error:', resendErr);
-    }
-  }
-
-  // 3. WEB3FORMS (if WEB3FORMS_ACCESS_KEY is configured)
-  if (process.env.WEB3FORMS_ACCESS_KEY) {
-    try {
-      const web3Res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: process.env.WEB3FORMS_ACCESS_KEY,
-          to: DESTINATION_EMAIL,
-          subject,
-          from_name: name,
-          email: email,
-          message: plainText,
-        }),
-      });
-      const web3Data = await web3Res.json();
-      if (web3Res.ok && web3Data?.success) {
-        console.log('✅ Email successfully dispatched via Web3Forms');
-        return { success: true, message: 'Message sent via Web3Forms', method: 'web3forms' };
-      }
-    } catch (web3Err) {
-      console.error('⚠️ Web3Forms error:', web3Err);
-    }
-  }
-
-  // 4. FORMSUBMIT RELAY
-  try {
-    const fsPayload = {
-      _subject: subject,
-      _template: 'table',
-      _captcha: 'false',
-      _replyto: email,
-      'Service': service,
-      'Client Name': name,
-      'Brand / Business Name': brand,
-      'Client Email': email,
-      'Project Notes': notes,
-      'Submitted At': timestamp,
-    };
-
-    const fsResponse = await fetch(`https://formsubmit.co/ajax/${DESTINATION_EMAIL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Origin: 'https://apexcreatives.aio',
-        Referer: 'https://apexcreatives.aio/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-      },
-      body: JSON.stringify(fsPayload),
-    });
-
-    if (fsResponse.ok) {
-      const data = await fsResponse.json().catch(() => null);
-      if (data && (data.success === true || data.success === 'true' || data.success === '1')) {
-        console.log('✅ Email successfully dispatched via FormSubmit');
-        return { success: true, message: 'Message sent via FormSubmit relay', method: 'formsubmit' };
-      } else if (data?.message && data.message.includes('Activation')) {
-        console.log('ℹ️ FormSubmit sent activation request to', DESTINATION_EMAIL);
-        // FormSubmit sent an activation email to apexcreativesaio@gmail.com
-        return {
-          success: true,
-          message: 'An activation link has been sent to apexcreativesaio@gmail.com. Please confirm in your inbox once to complete automatic routing.',
-          method: 'formsubmit_activation_sent',
-        };
-      }
-    }
-  } catch (fsErr: any) {
-    console.error('⚠️ FormSubmit relay error:', fsErr?.message || fsErr);
-  }
-
-  return {
-    success: false,
-    error: 'Email delivery could not be completed. Please configure GMAIL_APP_PASSWORD, SMTP credentials, or RESEND_API_KEY.',
-  };
+  return `BABI-${result}`;
 }
 
 async function startServer() {
@@ -272,75 +23,315 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Health check endpoint
+  // --- API ROUTES ---
+
+  // Health check
   app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok' });
+    res.json({ status: 'ok', service: 'BABI STORE API', timestamp: new Date().toISOString() });
   });
 
-  // Project Inquiry submission endpoint
-  app.post('/api/inquiry', async (req, res) => {
+  // Store Configuration
+  app.get('/api/config', (_req, res) => {
+    res.json({
+      success: true,
+      config: STORE_CONFIG,
+      paymentMethods: PAYMENT_METHODS
+    });
+  });
+
+  // Categories
+  app.get('/api/categories', (_req, res) => {
+    res.json({
+      success: true,
+      categories: STORE_CATEGORIES
+    });
+  });
+
+  // Products List
+  app.get('/api/products', (req, res) => {
+    const { category, subCategory, search, popular } = req.query;
+    let list = [...productsDatabase];
+
+    if (category && category !== 'all') {
+      list = list.filter((p) => p.category === category);
+    }
+
+    if (subCategory && subCategory !== 'all') {
+      list = list.filter((p) => p.subCategory === subCategory);
+    }
+
+    if (search && typeof search === 'string') {
+      const q = search.toLowerCase().trim();
+      list = list.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.tagline.toLowerCase().includes(q) ||
+          p.shortDescription.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.subCategory.toLowerCase().includes(q)
+      );
+    }
+
+    if (popular === 'true') {
+      list = list.filter((p) => p.isPopular);
+    }
+
+    res.json({
+      success: true,
+      total: list.length,
+      products: list
+    });
+  });
+
+  // Single Product
+  app.get('/api/products/:id', (req, res) => {
+    const product = productsDatabase.find((p) => p.id === req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, error: 'Product not found' });
+    }
+    res.json({ success: true, product });
+  });
+
+  // Create Order
+  app.post('/api/orders', (req, res) => {
     try {
-      const { name, brand, email, service, services, message, notes } = req.body as InquiryPayload;
+      const {
+        productId,
+        packageId,
+        quantity = 1,
+        paymentMethod,
+        paymentAccount,
+        transactionId,
+        customerInfo,
+        telegramUser
+      } = req.body;
 
-      // Validation
-      const cleanName = (typeof name === 'string' && name.trim()) || '';
-      if (!cleanName) {
-        return res.status(400).json({ success: false, error: 'Full name is required' });
+      const product = productsDatabase.find((p) => p.id === productId);
+      if (!product) {
+        return res.status(400).json({ success: false, error: 'Invalid product selected' });
       }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const cleanEmail = (typeof email === 'string' && email.trim()) || '';
-      if (!cleanEmail || !emailRegex.test(cleanEmail)) {
-        return res.status(400).json({ success: false, error: 'A valid email address is required' });
+      const pkg = product.packages.find((p) => p.id === packageId);
+      if (!pkg) {
+        return res.status(400).json({ success: false, error: 'Invalid package selected' });
       }
 
-      const selectedService =
-        (typeof service === 'string' && service.trim()) ||
-        (Array.isArray(services) && services.length > 0 ? services.join(', ') : '') ||
-        'WEB DEVELOPING';
-
-      const projectNotes =
-        (typeof notes === 'string' && notes.trim()) ||
-        (typeof message === 'string' && message.trim()) ||
-        '';
-
-      if (!projectNotes) {
-        return res.status(400).json({ success: false, error: 'Project notes are required' });
+      // Check required fields
+      for (const field of product.requiredFields) {
+        if (field.required && (!customerInfo || !customerInfo[field.id]?.trim())) {
+          return res.status(400).json({
+            success: false,
+            error: `Missing required field: ${field.label}`
+          });
+        }
       }
 
-      const cleanBrand = (typeof brand === 'string' && brand.trim()) || 'N/A';
+      const orderId = generateOrderId();
+      const totalPrice = Number((pkg.price * (Number(quantity) || 1)).toFixed(2));
 
-      const result = await dispatchEmail({
-        service: selectedService,
-        name: cleanName,
-        brand: cleanBrand,
-        email: cleanEmail,
-        notes: projectNotes,
+      const newOrder: OrderItem = {
+        orderId,
+        productId: product.id,
+        productName: product.name,
+        productCategory: product.category,
+        productImage: product.image,
+        packageId: pkg.id,
+        packageName: pkg.name,
+        packageUnit: pkg.unit,
+        quantity: Number(quantity) || 1,
+        amount: pkg.amount * (Number(quantity) || 1),
+        totalPrice,
+        paymentMethod: paymentMethod || 'Telebirr',
+        paymentAccount: paymentAccount || undefined,
+        transactionId: transactionId || customerInfo?.transaction_id || undefined,
+        paymentStatus: 'Paid',
+        orderStatus: 'Pending',
+        customerInfo: customerInfo || {},
+        guestId: req.body.guestId || undefined,
+        customerType: telegramUser && telegramUser.id > 0 ? 'telegram' : 'guest',
+        telegramUser: telegramUser || {
+          id: 0,
+          username: '',
+          firstName: 'Customer'
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        notes: `Order created via BABI STORE Mini App. Automated dispatch initiated.`
+      };
+
+      ordersDatabase.unshift(newOrder);
+
+      res.status(201).json({
+        success: true,
+        order: newOrder
       });
-
-      if (result.success) {
-        return res.json({
-          success: true,
-          message: result.message,
-          method: result.method,
-        });
-      } else {
-        return res.status(500).json({
-          success: false,
-          error: result.error || 'Failed to dispatch email.',
-        });
-      }
     } catch (err: any) {
-      console.error('Inquiry API endpoint error:', err);
-      return res.status(500).json({ success: false, error: err?.message || 'Server error processing inquiry' });
+      res.status(500).json({ success: false, error: err?.message || 'Server error creating order' });
     }
   });
 
-  // Vite middleware for development vs static serve for production
+  // Get Orders
+  app.get('/api/orders', (req, res) => {
+    const { telegramUserId, guestId, status, search } = req.query;
+    let list = [...ordersDatabase];
+
+    if (telegramUserId) {
+      const uid = Number(telegramUserId);
+      if (!isNaN(uid) && uid > 0) {
+        list = list.filter((o) => o.telegramUser?.id === uid);
+      }
+    } else if (guestId && typeof guestId === 'string') {
+      list = list.filter((o) => o.guestId === guestId);
+    }
+
+    if (status && status !== 'all') {
+      list = list.filter((o) => o.orderStatus.toLowerCase() === (status as string).toLowerCase());
+    }
+
+    if (search && typeof search === 'string') {
+      const q = search.toLowerCase().trim();
+      list = list.filter(
+        (o) =>
+          o.orderId.toLowerCase().includes(q) ||
+          o.productName.toLowerCase().includes(q) ||
+          o.packageName.toLowerCase().includes(q)
+      );
+    }
+
+    res.json({
+      success: true,
+      total: list.length,
+      orders: list
+    });
+  });
+
+  // Get Order by ID
+  app.get('/api/orders/:id', (req, res) => {
+    const order = ordersDatabase.find(
+      (o) => o.orderId.toUpperCase() === req.params.id.toUpperCase()
+    );
+    if (!order) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+    res.json({ success: true, order });
+  });
+
+  // Update Order Status (Admin/Fulfillment hook)
+  app.patch('/api/orders/:id/status', (req, res) => {
+    const { status, notes } = req.body;
+    const validStatuses: OrderStatus[] = ['Pending', 'Confirmed', 'Processing', 'Completed', 'Cancelled'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, error: 'Invalid order status' });
+    }
+
+    const order = ordersDatabase.find(
+      (o) => o.orderId.toUpperCase() === req.params.id.toUpperCase()
+    );
+    if (!order) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    order.orderStatus = status;
+    order.updatedAt = new Date().toISOString();
+    if (notes) {
+      order.notes = notes;
+    }
+
+    res.json({ success: true, order });
+  });
+
+  // Telegram Bot Simulator & Webhook Endpoint
+  app.post('/api/bot/command', (req, res) => {
+    const { command, user } = req.body;
+    const userName = user?.first_name || user?.username || 'Gamer';
+
+    switch (command) {
+      case '/start':
+      case 'start':
+        res.json({
+          success: true,
+          reply: `👋 Welcome to <b>BABI STORE</b>, ${userName}!\n\n<i>Gaming • Telegram • Social Services</i>\n\n⚡ Instant automated delivery 24/7\n🎮 eFootball (Android & iPhone), FC Mobile, PUBG UC & Free Fire\n⭐ Official Telegram Stars & Premium\n📈 Snapchat Premium, TikTok Coins & Facebook Boost\n\nTap <b>Open BABI STORE</b> below to explore our instant catalog:`,
+          buttons: [
+            { text: '🛍️ Open Store', action: 'open_app' },
+            { text: '📦 My Orders', action: 'my_orders' },
+            { text: '💬 Support', action: 'support' }
+          ]
+        });
+        break;
+
+      case 'my_orders':
+      case '/orders': {
+        const userId = user?.id;
+        const userOrders = userId && userId > 0
+          ? ordersDatabase.filter((o) => o.telegramUser?.id === userId)
+          : [];
+        if (userOrders.length === 0) {
+          res.json({
+            success: true,
+            reply: `📦 <b>You have no active orders.</b>\n\nBrowse BABI STORE to place your first instant order!`,
+            buttons: [{ text: '🛍️ Browse Store', action: 'open_app' }]
+          });
+        } else {
+          const orderSummary = userOrders
+            .slice(0, 3)
+            .map(
+              (o) =>
+                `• <b>#${o.orderId}</b>: ${o.productName} (${o.packageName})\n  Status: <code>${o.orderStatus}</code> | ${o.totalPrice.toLocaleString()} BIRR`
+            )
+            .join('\n\n');
+
+          res.json({
+            success: true,
+            reply: `📦 <b>Your Recent Orders (${userOrders.length}):</b>\n\n${orderSummary}\n\nTap below to view full order tracking in the Mini App:`,
+            buttons: [
+              { text: '📱 View Full Orders', action: 'open_orders' },
+              { text: '🛍️ Open Store', action: 'open_app' }
+            ]
+          });
+        }
+        break;
+      }
+
+      case 'support':
+      case '/support':
+        res.json({
+          success: true,
+          reply: `💬 <b>BABI STORE Support Team</b>\n\nNeed assistance with an order or top-up?\n• <b>Telegram Support:</b> @${STORE_CONFIG.supportUsername}\n• <b>Response time:</b> ~2 minutes\n• <b>Available:</b> 24/7\n\nHave your <b>Order ID (BABI-XXXXX)</b> ready for instant assistance!`,
+          buttons: [
+            { text: '💬 Contact Support Agent', action: 'open_support_chat' },
+            { text: '🛍️ Back to Store', action: 'open_app' }
+          ]
+        });
+        break;
+
+      default:
+        res.json({
+          success: true,
+          reply: `🤖 Unrecognized command. Please tap one of the buttons below to navigate BABI STORE:`,
+          buttons: [
+            { text: '🛍️ Open Store', action: 'open_app' },
+            { text: '📦 My Orders', action: 'my_orders' },
+            { text: '💬 Support', action: 'support' }
+          ]
+        });
+    }
+  });
+
+  // Webhook for real bot integration (ready for production deployment)
+  app.post('/api/bot/webhook', (req, res) => {
+    // Acknowledges Telegram webhook updates
+    res.json({ ok: true, received: true });
+  });
+
+  // Static files in public
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
+  // --- VITE MIDDLEWARE / STATIC SERVING ---
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'spa',
+      appType: 'spa'
     });
     app.use(vite.middlewares);
   } else {
@@ -352,9 +343,8 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`BABI STORE server running on http://0.0.0.0:${PORT}`);
   });
 }
 
 startServer();
-

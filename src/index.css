@@ -1,212 +1,82 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+:root {
+  --accent: #E5092F;
+  --accent-hover: #c70828;
+  --bg: #080808;
+  --card: #151515;
+  --card-hover: #1b1b1b;
+  --border: #27272A;
+  --border-accent: rgba(229, 9, 47, 0.4);
+}
 
 @layer base {
-  :root {
-    --bg-primary: #080808;
-    --bg-secondary: #111111;
-    --bg-card: #151515;
-    --text-primary: #FFFFFF;
-    --text-secondary: #A8A8A8;
-    --brand-red: #FF2B2B;
-    --brand-red-strong: #E50914;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-subtle: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  html.light {
-    --bg-primary: #F7F7F7;
-    --bg-secondary: #FFFFFF;
-    --bg-card: #FFFFFF;
-    --text-primary: #111111;
-    --text-secondary: #666666;
-    --brand-red: #E50914;
-    --brand-red-strong: #C40812;
-    --border-subtle: #E5E5E5;
-    --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-  }
-
-  html {
-    scroll-behavior: smooth;
-    transition: background-color 300ms var(--ease-subtle), color 300ms var(--ease-subtle);
-  }
-
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    letter-spacing: -0.01em;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 300ms var(--ease-subtle), color 300ms var(--ease-subtle);
-    overflow-x: hidden;
+    background-color: #080808;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
-  h1, h2, h3, h4, .font-display {
-    font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
-    letter-spacing: -0.03em;
+  input, textarea, select {
+    user-select: auto;
+    -webkit-user-select: auto;
   }
 
-  .font-mono-tech {
-    font-family: 'Space Grotesk', monospace;
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
-/* Elegant Glows & Red Accents */
-.apex-glow {
-  box-shadow: 0 10px 35px -5px rgba(255, 43, 43, 0.25);
+/* Glassmorphism & UI surfaces */
+.glass {
+  background: rgba(21, 21, 21, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #27272A;
 }
 
-html.light .apex-glow {
-  box-shadow: 0 8px 25px -4px rgba(229, 9, 20, 0.25);
+.glass-accent {
+  background: rgba(229, 9, 47, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-accent);
 }
 
-.apex-glow-sm {
-  box-shadow: 0 4px 20px -2px rgba(255, 43, 43, 0.2);
+.glow-red {
+  box-shadow: 0 0 30px rgba(229, 9, 47, 0.2);
 }
 
-html.light .apex-glow-sm {
-  box-shadow: 0 4px 16px -2px rgba(229, 9, 20, 0.2);
+.glow-red-lg {
+  box-shadow: 0 0 60px rgba(229, 9, 47, 0.15);
 }
 
-.apex-glow-lg {
-  box-shadow: 0 20px 60px -10px rgba(255, 43, 43, 0.35);
-}
-
-.apex-card-dark {
-  background-color: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.5rem;
-  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), 
-              border-color 300ms cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html.light .apex-card-dark {
-  background-color: #FFFFFF;
-  border: 1px solid #E5E5E5;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.text-gradient-red {
-  background: linear-gradient(135deg, #FF2B2B 0%, #E50914 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-html.light .text-gradient-red {
-  background: linear-gradient(135deg, #E50914 0%, #B80710 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Background Grids & Dots */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-html.light .bg-grid-pattern {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-.bg-grid-lines {
-  background-size: 48px 48px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-}
-
-html.light .bg-grid-lines {
-  background-size: 48px 48px;
-  background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-}
-
-/* Custom Scrollbar */
+/* Custom subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #080808;
-}
-
-html.light ::-webkit-scrollbar-track {
-  background: #F0F0F0;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #222222;
-  border-radius: 4px;
-}
-
-html.light ::-webkit-scrollbar-thumb {
-  background: #CCCCCC;
-  border-radius: 4px;
+  background: #27272A;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF2B2B;
+  background: #E5092F;
 }
 
-html.light ::-webkit-scrollbar-thumb:hover {
-  background: #E50914;
+/* Safe area padding helper for modern mobile / Telegram Mini App */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 12px);
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: rgba(17, 17, 17, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid #E5E5E5;
-}
-
-/* Smooth theme transition */
-.theme-transition {
-  transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1), 
-              color 300ms cubic-bezier(0.22, 1, 0.36, 1), 
-              border-color 300ms cubic-bezier(0.22, 1, 0.36, 1), 
-              box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1), 
-              opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Tactile button interaction utility */
-.btn-tactile {
-  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 200ms ease,
-              border-color 200ms ease,
-              color 200ms ease;
-}
-
-.btn-tactile:hover {
-  transform: translateY(-1px);
-}
-
-.btn-tactile:active {
-  transform: translateY(0.5px) scale(0.98);
-}
-
-/* Accessibility: Respect Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
