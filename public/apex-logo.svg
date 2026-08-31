@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="apexRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3333" />
+      <stop offset="100%" stop-color="#D80000" />
+    </linearGradient>
+    <linearGradient id="apexAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF4D4D" />
+      <stop offset="100%" stop-color="#B30000" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Apex Crest -->
+  <path
+    d="M32 4 L6 52 L17 52 L32 22 L47 52 L58 52 Z"
+    fill="url(#apexRed)"
+  />
+
+  <!-- Geometric Core Diamond / Triangle -->
+  <polygon
+    points="32,26 23,45 41,45"
+    fill="url(#apexAccent)"
+  />
+
+  <!-- Sharp Baseline Chevron -->
+  <path
+    d="M32 54 L20 60 L24 60 L32 56 L40 60 L44 60 Z"
+    fill="url(#apexRed)"
+  />
+</svg>

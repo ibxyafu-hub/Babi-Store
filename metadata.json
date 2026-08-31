@@ -1,6 +1,7 @@
 {
-  "name": "BABI STORE",
-  "description": "Telegram Mini App & Bot for Gaming, Social Media Services, and Website Development Services with Ethiopian Birr pricing.",
+  "name": "Apex Creatives",
+  "description": "Apex Creatives by Babi – Creative digital studio providing website development, gaming & social media top-ups, graphic design, and video editing.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
+

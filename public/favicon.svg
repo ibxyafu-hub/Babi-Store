@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="apexRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3B3B" />
+      <stop offset="100%" stop-color="#D60000" />
+    </linearGradient>
+    <linearGradient id="apexDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#CCCCCC" />
+    </linearGradient>
+  </defs>
+
+  <!-- Sleek Apex Geometric Monogram Mark -->
+  <g transform="translate(0, 0)">
+    <!-- Left Apex Wing / Ascender -->
+    <path
+      d="M250 40 L100 370 L170 370 L250 190 L330 370 L400 370 Z"
+      fill="url(#apexRedGrad)"
+    />
+    <!-- Inner Crossbar & Precision Apex Notch -->
+    <polygon
+      points="250,105 155,340 205,340 250,230 295,340 345,340"
+      fill="#080808"
+    />
+    <!-- Center Dynamic Core Shard -->
+    <polygon
+      points="250,150 215,310 285,310"
+      fill="url(#apexRedGrad)"
+    />
+    <!-- Base Chevron Accent -->
+    <polygon
+      points="250,380 160,440 200,440 250,405 300,440 340,440"
+      fill="url(#apexRedGrad)"
+    />
+  </g>
+</svg>
