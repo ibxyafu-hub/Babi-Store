@@ -246,17 +246,20 @@ async function startServer() {
     const { command, user } = req.body;
     const userName = user?.first_name || user?.username || 'Gamer';
 
+    const defaultButtons = [
+      { text: 'My Orders', action: 'my_orders' },
+      { text: 'Rules', action: 'rules' },
+      { text: 'Support', action: 'support' },
+      { text: 'About Us', action: 'about' }
+    ];
+
     switch (command) {
       case '/start':
       case 'start':
         res.json({
           success: true,
-          reply: `👋 Welcome to <b>BABI STORE</b>, ${userName}!\n\n<i>Gaming • Telegram • Social Services</i>\n\n⚡ Instant automated delivery 24/7\n🎮 eFootball (Android & iPhone), FC Mobile, PUBG UC & Free Fire\n⭐ Official Telegram Stars & Premium\n📈 Snapchat Premium, TikTok Coins & Facebook Boost\n\nTap <b>Open BABI STORE</b> below to explore our instant catalog:`,
-          buttons: [
-            { text: '🛍️ Open Store', action: 'open_app' },
-            { text: '📦 My Orders', action: 'my_orders' },
-            { text: '💬 Support', action: 'support' }
-          ]
+          reply: `Welcome to <b>BABI AI Chat</b>, ${userName}!\n\n<i>Gaming • Telegram • Social Services</i>\n\nInstant automated delivery 24/7\neFootball (Android & iPhone), FC Mobile, PUBG UC & Free Fire\nOfficial Telegram Stars & Premium\n\nChoose an action below:`,
+          buttons: defaultButtons
         });
         break;
 
@@ -269,12 +272,15 @@ async function startServer() {
         if (userOrders.length === 0) {
           res.json({
             success: true,
-            reply: `📦 <b>You have no active orders.</b>\n\nBrowse BABI STORE to place your first instant order!`,
-            buttons: [{ text: '🛍️ Browse Store', action: 'open_app' }]
+            reply: `<b>You currently have no active orders.</b>\n\nWhen you place an order in BABI STORE, its live tracking, Order ID, and status will appear here.`,
+            buttons: [
+              { text: 'Rules', action: 'rules' },
+              { text: 'Support', action: 'support' }
+            ]
           });
         } else {
           const orderSummary = userOrders
-            .slice(0, 3)
+            .slice(0, 5)
             .map(
               (o) =>
                 `• <b>#${o.orderId}</b>: ${o.productName} (${o.packageName})\n  Status: <code>${o.orderStatus}</code> | ${o.totalPrice.toLocaleString()} BIRR`
@@ -283,24 +289,50 @@ async function startServer() {
 
           res.json({
             success: true,
-            reply: `📦 <b>Your Recent Orders (${userOrders.length}):</b>\n\n${orderSummary}\n\nTap below to view full order tracking in the Mini App:`,
+            reply: `<b>Your Recent Orders (${userOrders.length}):</b>\n\n${orderSummary}`,
             buttons: [
-              { text: '📱 View Full Orders', action: 'open_orders' },
-              { text: '🛍️ Open Store', action: 'open_app' }
+              { text: 'Rules', action: 'rules' },
+              { text: 'Support', action: 'support' }
             ]
           });
         }
         break;
       }
 
+      case 'rules':
+      case '/rules':
+        res.json({
+          success: true,
+          reply: `<b>እነዚህን አንብቡ ከመግዛታችሁ በፊት</b>\n\n1. እኛ የታዘዘውን እቃ ማቅረብ እስከቻልን ድረስ refund የለም።\n\n2. ብር ከላካችሁ በኋላ የላካችሁበትን ማስረጃ (transaction number) ሳትልኩ 20 ደቂቃ ካለፈ ተቀባይነት አይኖረውም!\n\n3. ደረሰኝ ሳይልኩ "ልኬአለው" ብሎ መከራከር ጥቅም የለውም፤ ተቀባይነት አይኖረውም።\n\n4. ክፍያ ከፈጸማችሁ በኋላ በቀኑ እቃችሁን ካልተረከባችሁ ከዛ በኋላ ላለው ሀላፊነት አንወስድም።\n\n5. ከእኛ የደረሳችሁን መልዕክት ከተቀበላችሁ በኋላ እቃው ካልደረሳችሁ በ30 ደቂቃ ውስጥ አረጋግጣችሁ ቅሬታ ማቅረብ አለባችሁ። 30 ደቂቃ ካለፈ ሀላፊነት አንወስድም።`,
+          buttons: [
+            { text: 'My Orders', action: 'my_orders' },
+            { text: 'Support', action: 'support' }
+          ]
+        });
+        break;
+
       case 'support':
       case '/support':
         res.json({
           success: true,
-          reply: `💬 <b>BABI STORE Support Team</b>\n\nNeed assistance with an order or top-up?\n• <b>Telegram Support:</b> @${STORE_CONFIG.supportUsername}\n• <b>Response time:</b> ~2 minutes\n• <b>Available:</b> 24/7\n\nHave your <b>Order ID (BABI-XXXXX)</b> ready for instant assistance!`,
+          reply: `Having a problem with your order or need help? Our support team is here to help. Contact us using email or Telegram.\n\n<b>Email Support:</b> apexcreativesaio@gmail.com\n<b>Telegram Support:</b> @Raf_babi`,
           buttons: [
-            { text: '💬 Contact Support Agent', action: 'open_support_chat' },
-            { text: '🛍️ Back to Store', action: 'open_app' }
+            { text: 'My Orders', action: 'my_orders' },
+            { text: 'Rules', action: 'rules' },
+            { text: 'About Us', action: 'about' }
+          ]
+        });
+        break;
+
+      case 'about':
+      case '/about':
+        res.json({
+          success: true,
+          reply: `<b>About BABI STORE</b>\n\nBABI STORE is a digital gaming store created to make buying game products simple, fast, and convenient.\n\n<b>Our Services</b>\nWe provide digital gaming products and top-up services for popular games. Our goal is to make the ordering process easy and provide customers with a smooth experience from placing an order until delivery.\n\n<b>Trusted Service</b>\nWe work to provide a reliable and trustworthy service for our customers. Every order is handled carefully, and our support team is available to help when customers have questions or problems.\n\n<b>Our Goal</b>\nOur goal is to build a trusted gaming store where customers can easily find what they need, place their orders, and receive professional support.\n\nThank you for choosing BABI STORE`,
+          buttons: [
+            { text: 'My Orders', action: 'my_orders' },
+            { text: 'Rules', action: 'rules' },
+            { text: 'Support', action: 'support' }
           ]
         });
         break;
@@ -308,12 +340,8 @@ async function startServer() {
       default:
         res.json({
           success: true,
-          reply: `🤖 Unrecognized command. Please tap one of the buttons below to navigate BABI STORE:`,
-          buttons: [
-            { text: '🛍️ Open Store', action: 'open_app' },
-            { text: '📦 My Orders', action: 'my_orders' },
-            { text: '💬 Support', action: 'support' }
-          ]
+          reply: `I am your <b>BABI AI Assistant</b>. How can I help you? Choose one of the options below:`,
+          buttons: defaultButtons
         });
     }
   });

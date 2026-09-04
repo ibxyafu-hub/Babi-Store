@@ -19,7 +19,8 @@ import {
   Lock,
   ChevronRight,
   Info,
-  QrCode
+  QrCode,
+  Wallet
 } from 'lucide-react';
 
 interface OrderFlowModalProps {
@@ -179,6 +180,8 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
         return <Smartphone className="w-5 h-5 text-[#E5092F]" />;
       case 'Building2':
         return <Building2 className="w-5 h-5 text-[#E5092F]" />;
+      case 'Wallet':
+        return <Wallet className="w-5 h-5 text-[#E5092F]" />;
       default:
         return <Smartphone className="w-5 h-5 text-[#E5092F]" />;
     }
@@ -344,7 +347,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                   1. Select Payment Method
                 </span>
                 <p className="text-[11px] text-[#A1A1AA]">
-                  Transfer the exact amount using Telebirr or Commercial Bank of Ethiopia.
+                  Transfer the exact amount using Telebirr or Binance.
                 </p>
               </div>
 
@@ -441,7 +444,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0d0d0e] border border-[#E5092F]/40">
                     <div>
                       <span className="text-[10px] text-[#A1A1AA] block uppercase tracking-wider">
-                        {activePaymentMethod.id === 'telebirr' ? 'Telebirr Phone Number' : 'CBE Account Number'}
+                        {activePaymentMethod.id === 'telebirr' ? 'Telebirr Phone Number' : activePaymentMethod.id === 'binance' ? 'Binance ID' : 'Account Number'}
                       </span>
                       <span className="font-mono font-black text-sm text-[#E5092F] tracking-wide">
                         {activePaymentMethod.accountNumber}
@@ -450,7 +453,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleCopy(activePaymentMethod.accountNumber, 'account')}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#E5092F] hover:bg-[#c70828] text-white text-[11px] font-bold shadow-md shadow-[#E5092F]/30 transition-all active:scale-95"
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#E5092F] hover:bg-[#c70828] text-white text-[11px] font-bold shadow-md shadow-[#E5092F]/30 transition-all active:scale-[0.98]"
                     >
                       {copiedAccount ? (
                         <>
@@ -489,9 +492,19 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                 <div className="p-2 rounded-lg bg-[#111111] text-[10px] text-neutral-300 space-y-1">
                   <span className="font-bold text-[#E5092F] block">Quick Transfer Instructions:</span>
                   <ol className="list-decimal list-inside space-y-0.5 text-[#A1A1AA]">
-                    <li>Open your {activePaymentMethod.name} App (or USSD).</li>
-                    <li>Transfer <b>{formatPrice(totalPrice, 'BIRR')}</b> to <b>{activePaymentMethod.accountNumber}</b> ({activePaymentMethod.accountName}).</li>
-                    <li>Copy the Transaction ID from the transfer confirmation SMS / receipt.</li>
+                    {activePaymentMethod.id === 'telebirr' ? (
+                      <>
+                        <li>Open your Telebirr App (or *127# USSD).</li>
+                        <li>Transfer <b>{formatPrice(totalPrice, 'BIRR')}</b> to <b>{activePaymentMethod.accountNumber}</b> ({activePaymentMethod.accountName}).</li>
+                        <li>Copy the Transaction ID from the transfer confirmation SMS / receipt.</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>Open your Binance App (Pay / Send).</li>
+                        <li>Transfer <b>{formatPrice(totalPrice, 'BIRR')}</b> equivalent to Binance ID <b>{activePaymentMethod.accountNumber}</b> ({activePaymentMethod.accountName}).</li>
+                        <li>Copy the Order ID or TxID from your transfer receipt.</li>
+                      </>
+                    )}
                   </ol>
                 </div>
               </div>
@@ -524,7 +537,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                     placeholder={
                       activePaymentMethod.id === 'telebirr'
                         ? 'e.g. FT26081492048 or Telebirr Txn ID'
-                        : 'e.g. 1000367064297 / CBE Ref No'
+                        : 'e.g. Binance Order ID / TxID'
                     }
                     className={`w-full bg-[#111111] border text-white text-xs font-mono rounded-xl px-3.5 py-3 outline-none transition-colors placeholder:text-[#71717A] ${
                       paymentError
@@ -536,9 +549,10 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setTransactionId('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 text-xs"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 p-0.5 transition-colors"
+                      aria-label="Clear transaction reference"
                     >
-                      ✕
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -550,7 +564,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
                   </p>
                 ) : (
                   <p className="text-[10px] text-[#A1A1AA]">
-                    Enter the transaction number from your {activePaymentMethod.name} confirmation SMS to instantly link your payment.
+                    Enter the transaction or order ID from your {activePaymentMethod.name} confirmation to instantly link your payment.
                   </p>
                 )}
               </div>
@@ -633,7 +647,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
             <button
               id="btn-next-to-payment"
               onClick={handleNextFromDetails}
-              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all transform active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98]"
             >
               <span>Continue to Payment</span>
               <ChevronRight className="w-4 h-4" />
@@ -644,7 +658,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
             <button
               id="btn-next-to-review"
               onClick={handleNextFromPayment}
-              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all transform active:scale-95"
+              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98]"
             >
               <span>Verify & Review Order</span>
               <ChevronRight className="w-4 h-4" />
@@ -656,7 +670,7 @@ export const OrderFlowModal: React.FC<OrderFlowModalProps> = ({
               id="btn-submit-order"
               onClick={handleSubmitOrder}
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all transform active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">

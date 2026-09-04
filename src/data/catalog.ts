@@ -3,12 +3,12 @@ import { Product, StoreCategory, PaymentMethod } from '../types';
 export const STORE_CATEGORIES: StoreCategory[] = [
   {
     id: 'gaming',
-    name: 'Gaming',
+    name: 'Gaming Topup',
     emoji: '🎮',
     icon: 'Gamepad2',
     description: 'Instant game top-ups, coins, diamonds, UC & CP points',
     accentColor: '#E5092F',
-    productCount: 7,
+    productCount: 6,
     subcategories: [
       {
         id: 'gaming-topup',
@@ -17,12 +17,20 @@ export const STORE_CATEGORIES: StoreCategory[] = [
         emoji: '💳',
         icon: 'CreditCard',
         description: 'PUBG UC, Free Fire Diamonds, COD CP, eFootball Coins, FC Mobile'
+      },
+      {
+        id: 'gaming-accounts',
+        mainCategoryId: 'gaming',
+        name: 'Accounts',
+        emoji: '🛡️',
+        icon: 'ShieldCheck',
+        description: 'Verified game accounts, Konami ID squads & custom orders'
       }
     ]
   },
   {
     id: 'social',
-    name: 'Social Media',
+    name: 'Social Media Topup',
     emoji: '📱',
     icon: 'Smartphone',
     description: 'Telegram Stars, Premium, TikTok Coins, Boost & Snapchat+',
@@ -36,6 +44,14 @@ export const STORE_CATEGORIES: StoreCategory[] = [
         emoji: '📈',
         icon: 'TrendingUp',
         description: 'Telegram Stars, Telegram Premium, TikTok Coins, FB Boost, Snapchat+'
+      },
+      {
+        id: 'social-accounts',
+        mainCategoryId: 'social',
+        name: 'Accounts',
+        emoji: '👥',
+        icon: 'Users',
+        description: 'Monetized & aged social accounts, verified channels'
       }
     ]
   },
@@ -67,19 +83,19 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
     icon: 'Smartphone',
     description: 'Instant transfer via Telebirr app / *127#',
     accountNumber: '0989678770',
-    accountName: 'Kirubel Wondwosen',
+    accountName: 'Kirubel',
     badge: 'Popular',
-    instructions: 'Send the exact amount via Telebirr to 0989678770 (Kirubel Wondwosen) and enter your Telebirr Transaction ID below.'
+    instructions: 'Send the exact amount via Telebirr to 0989678770 (Kirubel) and enter your Telebirr Transaction ID below.'
   },
   {
-    id: 'cbe',
-    name: 'Commercial Bank Of Ethiopia',
-    icon: 'Building2',
-    description: 'CBE Mobile Banking & CBE Birr transfer',
-    accountNumber: '1000367064297',
-    accountName: 'Kirubel Wondwosen',
-    badge: 'Official CBE',
-    instructions: 'Transfer the exact amount to CBE Account 1000367064297 (Kirubel Wondwosen) and enter your Transfer Reference / Transaction number below.'
+    id: 'binance',
+    name: 'Binance',
+    icon: 'Wallet',
+    description: 'Binance Pay / UID transfer',
+    accountNumber: '316723542',
+    accountName: 'Kirubel',
+    badge: 'Official Binance',
+    instructions: 'Transfer via Binance Pay using Binance ID 316723542 (Kirubel) and enter your Binance Order / TxID below.'
   }
 ];
 
@@ -102,7 +118,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/pubguc.jpg',
     badge: 'By ID',
     isPopular: true,
-    popularPriceText: '385 ➡️ 1,080 BIRR',
+    popularPriceText: '385 ➡️ 1,200 BIRR',
     status: 'Fast Delivery',
     deliveryEstimate: '2 - 8 minutes',
     packageNote: 'UC የሚገባበት ጊዜ 2-8 ደቂቃ!',
@@ -126,45 +142,45 @@ export const INITIAL_PRODUCTS: Product[] = [
     ],
     packages: [
       { id: 'pubg-30', name: '30 UC', amount: 30, quantity: 30, unit: 'UC', price: 140, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-60', name: '60 UC', amount: 60, quantity: 60, unit: 'UC', price: 190, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-60', name: '60 UC', amount: 60, quantity: 60, unit: 'UC', price: 200, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-120', name: '120 UC', amount: 120, quantity: 120, unit: 'UC', price: 390, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-180', name: '180 UC', amount: 180, quantity: 180, unit: 'UC', price: 600, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-180', name: '180 UC', amount: 180, quantity: 180, unit: 'UC', price: 570, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-240', name: '240 UC', amount: 240, quantity: 240, unit: 'UC', price: 750, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-325', name: '325 UC', amount: 325, quantity: 325, unit: 'UC', price: 900, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-325', name: '325 UC', amount: 325, quantity: 325, unit: 'UC', price: 890, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-355', name: '355 UC', amount: 355, quantity: 355, unit: 'UC', price: 990, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-365', name: '365 UC', amount: 365, quantity: 365, unit: 'UC', price: 1050, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-385', name: '385 UC', amount: 385, quantity: 385, unit: 'UC', price: 1080, currency: 'BIRR', packageType: 'By ID', badge: 'Popular' },
+      { id: 'pubg-385', name: '385 UC', amount: 385, quantity: 385, unit: 'UC', price: 1200, currency: 'BIRR', packageType: 'By ID', badge: 'Popular' },
       { id: 'pubg-415', name: '415 UC', amount: 415, quantity: 415, unit: 'UC', price: 1150, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-445', name: '445 UC', amount: 445, quantity: 445, unit: 'UC', price: 1280, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-475', name: '475 UC', amount: 475, quantity: 475, unit: 'UC', price: 1380, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-505', name: '505 UC', amount: 505, quantity: 505, unit: 'UC', price: 1480, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-565', name: '565 UC', amount: 565, quantity: 565, unit: 'UC', price: 1650, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-660', name: '660 UC', amount: 660, quantity: 660, unit: 'UC', price: 1750, currency: 'BIRR', packageType: 'By ID', badge: 'Best Value' },
-      { id: 'pubg-720', name: '720 UC', amount: 720, quantity: 720, unit: 'UC', price: 1890, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-660', name: '660 UC', amount: 660, quantity: 660, unit: 'UC', price: 1790, currency: 'BIRR', packageType: 'By ID', badge: 'Best Value' },
+      { id: 'pubg-720', name: '720 UC', amount: 720, quantity: 720, unit: 'UC', price: 1985, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-780', name: '780 UC', amount: 780, quantity: 780, unit: 'UC', price: 2090, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-810', name: '810 UC', amount: 810, quantity: 810, unit: 'UC', price: 2260, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-840', name: '840 UC', amount: 840, quantity: 840, unit: 'UC', price: 2350, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-985', name: '985 UC', amount: 985, quantity: 985, unit: 'UC', price: 2750, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-985', name: '985 UC', amount: 985, quantity: 985, unit: 'UC', price: 2800, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1045', name: '1,045 UC', amount: 1045, quantity: 1045, unit: 'UC', price: 2890, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1105', name: '1,105 UC', amount: 1105, quantity: 1105, unit: 'UC', price: 3050, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1165', name: '1,165 UC', amount: 1165, quantity: 1165, unit: 'UC', price: 3200, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1225', name: '1,225 UC', amount: 1225, quantity: 1225, unit: 'UC', price: 3350, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1320', name: '1,320 UC', amount: 1320, quantity: 1320, unit: 'UC', price: 3500, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-1800', name: '1,800 UC', amount: 1800, quantity: 1800, unit: 'UC', price: 4700, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-1800', name: '1,800 UC', amount: 1800, quantity: 1800, unit: 'UC', price: 4480, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-1980', name: '1,980 UC', amount: 1980, quantity: 1980, unit: 'UC', price: 5100, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-2125', name: '2,125 UC', amount: 2125, quantity: 2125, unit: 'UC', price: 5400, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-2125', name: '2,125 UC', amount: 2125, quantity: 2125, unit: 'UC', price: 5500, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-2460', name: '2,460 UC', amount: 2460, quantity: 2460, unit: 'UC', price: 6300, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-2785', name: '2,785 UC', amount: 2785, quantity: 2785, unit: 'UC', price: 7100, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-3110', name: '3,110 UC', amount: 3110, quantity: 3110, unit: 'UC', price: 7900, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-3850', name: '3,850 UC', amount: 3850, quantity: 3850, unit: 'UC', price: 9100, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-3850', name: '3,850 UC', amount: 3850, quantity: 3850, unit: 'UC', price: 8800, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-4030', name: '4,030 UC', amount: 4030, quantity: 4030, unit: 'UC', price: 9750, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-4510', name: '4,510 UC', amount: 4510, quantity: 4510, unit: 'UC', price: 10900, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-5650', name: '5,650 UC', amount: 5650, quantity: 5650, unit: 'UC', price: 13500, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-8100', name: '8,100 UC', amount: 8100, quantity: 8100, unit: 'UC', price: 17800, currency: 'BIRR', packageType: 'By ID', badge: 'Mega' },
+      { id: 'pubg-8100', name: '8,100 UC', amount: 8100, quantity: 8100, unit: 'UC', price: 17480, currency: 'BIRR', packageType: 'By ID', badge: 'Mega' },
       { id: 'pubg-9900', name: '9,900 UC', amount: 9900, quantity: 9900, unit: 'UC', price: 23200, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-11950', name: '11,950 UC', amount: 11950, quantity: 11950, unit: 'UC', price: 27600, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-16200', name: '16,200 UC', amount: 16200, quantity: 16200, unit: 'UC', price: 35000, currency: 'BIRR', packageType: 'By ID' },
-      { id: 'pubg-24300', name: '24,300 UC', amount: 24300, quantity: 24300, unit: 'UC', price: 54000, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-16200', name: '16,200 UC', amount: 16200, quantity: 16200, unit: 'UC', price: 35600, currency: 'BIRR', packageType: 'By ID' },
+      { id: 'pubg-24300', name: '24,300 UC', amount: 24300, quantity: 24300, unit: 'UC', price: 54100, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-32400', name: '32,400 UC', amount: 32400, quantity: 32400, unit: 'UC', price: 71000, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-40500', name: '40,500 UC', amount: 40500, quantity: 40500, unit: 'UC', price: 92000, currency: 'BIRR', packageType: 'By ID' },
       { id: 'pubg-48600', name: '48,600 UC', amount: 48600, quantity: 48600, unit: 'UC', price: 112000, currency: 'BIRR', packageType: 'By ID' },
@@ -178,61 +194,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     ]
   },
 
-  // 2. 🎯 PUBG UC — LOGIN PRICE
-  {
-    id: 'pubg-uc-login',
-    name: 'PUBG UC (Login)',
-    category: 'gaming',
-    subCategory: 'gaming-topup',
-    packageType: 'Login',
-    tagline: 'Discounted PUBG UC via Direct Account Login',
-    shortDescription: 'Super discounted PUBG UC with delivery in 3-7 minutes via login.',
-    longDescription: 'High discount PUBG Mobile UC directly loaded to your account via Twitter, Facebook or Email link. 100% safe transaction guaranteed by BABI STORE.',
-    icon: 'LogIn',
-    image: '/pubguc.jpg',
-    badge: 'Login Discount',
-    isPopular: false,
-    status: 'Fast Delivery',
-    deliveryEstimate: '3 - 7 minutes',
-    packageNote: 'Login price 3-7 ደቂቃ ይገባል',
-    requiredFields: [
-      {
-        id: 'login_method',
-        label: 'Login Method',
-        placeholder: 'Select Login Platform',
-        type: 'select',
-        options: ['Twitter / X', 'Facebook', 'Email / Phone', 'Google Play'],
-        required: true
-      },
-      {
-        id: 'account_identifier',
-        label: 'Username / Email / Phone',
-        placeholder: 'Enter login identifier',
-        type: 'text',
-        required: true
-      },
-      {
-        id: 'account_password',
-        label: 'Account Password',
-        placeholder: 'Enter password',
-        type: 'text',
-        required: true
-      }
-    ],
-    packages: [
-      { id: 'pubg-log-60', name: '60 UC', amount: 60, quantity: 60, unit: 'UC', price: 130, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-120', name: '120 UC', amount: 120, quantity: 120, unit: 'UC', price: 260, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-325', name: '325 UC', amount: 325, quantity: 325, unit: 'UC', price: 650, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-660', name: '660 UC', amount: 660, quantity: 660, unit: 'UC', price: 1280, currency: 'BIRR', packageType: 'Login', badge: 'Popular' },
-      { id: 'pubg-log-1800', name: '1,800 UC', amount: 1800, quantity: 1800, unit: 'UC', price: 3450, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-3850', name: '3,850 UC', amount: 3850, quantity: 3850, unit: 'UC', price: 6800, currency: 'BIRR', packageType: 'Login', badge: 'Best Value' },
-      { id: 'pubg-log-8100', name: '8,100 UC', amount: 8100, quantity: 8100, unit: 'UC', price: 13500, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-16200', name: '16,200 UC', amount: 16200, quantity: 16200, unit: 'UC', price: 26000, currency: 'BIRR', packageType: 'Login' },
-      { id: 'pubg-log-32400', name: '32,400 UC', amount: 32400, quantity: 32400, unit: 'UC', price: 51000, currency: 'BIRR', packageType: 'Login', badge: 'Mega Discount' }
-    ]
-  },
-
-  // 3. ⚽ eFOOTBALL — FOR ANDROID USER
+  // 2. ⚽ eFOOTBALL — FOR ANDROID USER
   {
     id: 'efootball-android-user',
     name: 'eFootball For Android User',
@@ -272,11 +234,11 @@ export const INITIAL_PRODUCTS: Product[] = [
       { id: 'ef-and-320', name: '320 Coins', amount: 320, quantity: 320, unit: 'Coins', price: 270, currency: 'BIRR' },
       { id: 'ef-and-550', name: '550 Coins', amount: 550, quantity: 550, unit: 'Coins', price: 380, currency: 'BIRR' },
       { id: 'ef-and-750', name: '750 Coins', amount: 750, quantity: 750, unit: 'Coins', price: 470, currency: 'BIRR' },
-      { id: 'ef-and-1050', name: '1,050 Coins', amount: 1050, quantity: 1050, unit: 'Coins', price: 630, currency: 'BIRR' },
+      { id: 'ef-and-1050', name: '1,040 Coins', amount: 1040, quantity: 1040, unit: 'Coins', price: 2500, currency: 'BIRR' },
       { id: 'ef-and-2130', name: '2,130 Coins', amount: 2130, quantity: 2130, unit: 'Coins', price: 3900, currency: 'BIRR', badge: 'Popular' },
-      { id: 'ef-and-3300', name: '3,300 Coins', amount: 3300, quantity: 3300, unit: 'Coins', price: 5800, currency: 'BIRR' },
-      { id: 'ef-and-5800', name: '5,800 Coins', amount: 5800, quantity: 5800, unit: 'Coins', price: 9900, currency: 'BIRR' },
-      { id: 'ef-and-12800', name: '12,800 Coins', amount: 12800, quantity: 12800, unit: 'Coins', price: 21500, currency: 'BIRR', badge: 'Whale Pack' }
+      { id: 'ef-and-3300', name: '3,250 Coins', amount: 3250, quantity: 3250, unit: 'Coins', price: 5800, currency: 'BIRR' },
+      { id: 'ef-and-5800', name: '5,700 Coins', amount: 5700, quantity: 5700, unit: 'Coins', price: 8900, currency: 'BIRR' },
+      { id: 'ef-and-12800', name: '12,800 Coins', amount: 12800, quantity: 12800, unit: 'Coins', price: 15950, currency: 'BIRR', badge: 'Whale Pack' }
     ]
   },
 
@@ -318,11 +280,11 @@ export const INITIAL_PRODUCTS: Product[] = [
       { id: 'ef-ios-320', name: '320 Coins', amount: 320, quantity: 320, unit: 'Coins', price: 360, currency: 'BIRR' },
       { id: 'ef-ios-550', name: '550 Coins', amount: 550, quantity: 550, unit: 'Coins', price: 540, currency: 'BIRR' },
       { id: 'ef-ios-750', name: '750 Coins', amount: 750, quantity: 750, unit: 'Coins', price: 720, currency: 'BIRR' },
-      { id: 'ef-ios-1050', name: '1,050 Coins', amount: 1050, quantity: 1050, unit: 'Coins', price: 880, currency: 'BIRR', badge: 'Popular' },
-      { id: 'ef-ios-2150', name: '2,150 Coins', amount: 2150, quantity: 2150, unit: 'Coins', price: 1700, currency: 'BIRR', badge: 'Best Value' },
-      { id: 'ef-ios-3300', name: '3,300 Coins', amount: 3300, quantity: 3300, unit: 'Coins', price: 2600, currency: 'BIRR' },
-      { id: 'ef-ios-5800', name: '5,800 Coins', amount: 5800, quantity: 5800, unit: 'Coins', price: 4450, currency: 'BIRR' },
-      { id: 'ef-ios-12800', name: '12,800 Coins', amount: 12800, quantity: 12800, unit: 'Coins', price: 9500, currency: 'BIRR', badge: 'Whale Pack' }
+      { id: 'ef-ios-1050', name: '1,040 Coins', amount: 1040, quantity: 1040, unit: 'Coins', price: 1950, currency: 'BIRR', badge: 'Popular' },
+      { id: 'ef-ios-2150', name: '2,130 Coins', amount: 2130, quantity: 2130, unit: 'Coins', price: 3700, currency: 'BIRR', badge: 'Best Value' },
+      { id: 'ef-ios-3300', name: '3,250 Coins', amount: 3250, quantity: 3250, unit: 'Coins', price: 5400, currency: 'BIRR' },
+      { id: 'ef-ios-5800', name: '5,700 Coins', amount: 5700, quantity: 5700, unit: 'Coins', price: 7900, currency: 'BIRR' },
+      { id: 'ef-ios-12800', name: '12,800 Coins', amount: 12800, quantity: 12800, unit: 'Coins', price: 15650, currency: 'BIRR', badge: 'Whale Pack' }
     ]
   },
 
@@ -360,11 +322,11 @@ export const INITIAL_PRODUCTS: Product[] = [
       }
     ],
     packages: [
-      { id: 'ff-100', name: '100 Diamonds', amount: 100, quantity: 100, unit: '💎', price: 230, currency: 'BIRR', packageGroup: 'Diamonds' },
-      { id: 'ff-210', name: '210 Diamonds', amount: 210, quantity: 210, unit: '💎', price: 450, currency: 'BIRR', packageGroup: 'Diamonds' },
+      { id: 'ff-100', name: '100 Diamonds', amount: 100, quantity: 100, unit: '💎', price: 280, currency: 'BIRR', packageGroup: 'Diamonds' },
+      { id: 'ff-210', name: '210 Diamonds', amount: 210, quantity: 210, unit: '💎', price: 550, currency: 'BIRR', packageGroup: 'Diamonds' },
       { id: 'ff-530', name: '530 Diamonds', amount: 530, quantity: 530, unit: '💎', price: 1100, currency: 'BIRR', packageGroup: 'Diamonds', badge: 'Popular' },
-      { id: 'ff-1080', name: '1,080 Diamonds', amount: 1080, quantity: 1080, unit: '💎', price: 2150, currency: 'BIRR', packageGroup: 'Diamonds' },
-      { id: 'ff-2200', name: '2,200 Diamonds', amount: 2200, quantity: 2200, unit: '💎', price: 4250, currency: 'BIRR', packageGroup: 'Diamonds', badge: 'Best Value' },
+      { id: 'ff-1080', name: '1,080 Diamonds', amount: 1080, quantity: 1080, unit: '💎', price: 2200, currency: 'BIRR', packageGroup: 'Diamonds' },
+      { id: 'ff-2200', name: '2,200 Diamonds', amount: 2200, quantity: 2200, unit: '💎', price: 3950, currency: 'BIRR', packageGroup: 'Diamonds', badge: 'Best Value' },
       { id: 'ff-4450', name: '4,450 Diamonds', amount: 4450, quantity: 4450, unit: '💎', price: 8400, currency: 'BIRR', packageGroup: 'Diamonds' },
       { id: 'ff-7450', name: '7,450 Diamonds', amount: 7450, quantity: 7450, unit: '💎', price: 13800, currency: 'BIRR', packageGroup: 'Diamonds', badge: 'Super Pack' },
       { id: 'ff-weekly', name: 'Weekly Membership Pass', amount: 450, quantity: 450, unit: '💎 Pass', price: 420, currency: 'BIRR', packageGroup: 'Membership & Pass', badge: 'Hot' },
@@ -409,11 +371,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     packages: [
       { id: 'cp-30', name: '30 CP', amount: 30, quantity: 30, unit: 'CP', price: 140, currency: 'BIRR' },
       { id: 'cp-80', name: '80 CP', amount: 80, quantity: 80, unit: 'CP', price: 250, currency: 'BIRR' },
-      { id: 'cp-420', name: '420 CP', amount: 420, quantity: 420, unit: 'CP', price: 1100, currency: 'BIRR', badge: 'Battle Pass' },
-      { id: 'cp-880', name: '880 CP', amount: 880, quantity: 880, unit: 'CP', price: 2150, currency: 'BIRR', badge: 'Popular' },
-      { id: 'cp-2400', name: '2,400 CP', amount: 2400, quantity: 2400, unit: 'CP', price: 5400, currency: 'BIRR', badge: 'Best Value' },
-      { id: 'cp-5000', name: '5,000 CP', amount: 5000, quantity: 5000, unit: 'CP', price: 10400, currency: 'BIRR' },
-      { id: 'cp-10800', name: '10,800 CP', amount: 10800, quantity: 10800, unit: 'CP', price: 20500, currency: 'BIRR', badge: 'Mythic Draw' },
+      { id: 'cp-420', name: '420 CP', amount: 420, quantity: 420, unit: 'CP', price: 1700, currency: 'BIRR', badge: 'Battle Pass' },
+      { id: 'cp-880', name: '880 CP', amount: 880, quantity: 880, unit: 'CP', price: 2650, currency: 'BIRR', badge: 'Popular' },
+      { id: 'cp-2400', name: '2,400 CP', amount: 2400, quantity: 2400, unit: 'CP', price: 4800, currency: 'BIRR', badge: 'Best Value' },
+      { id: 'cp-5000', name: '5,000 CP', amount: 5000, quantity: 5000, unit: 'CP', price: 9000, currency: 'BIRR' },
+      { id: 'cp-10800', name: '10,800 CP', amount: 10800, quantity: 10800, unit: 'CP', price: 16000, currency: 'BIRR', badge: 'Mythic Draw' },
       { id: 'cp-21600', name: '21,600 CP', amount: 21600, quantity: 21600, unit: 'CP', price: 38000, currency: 'BIRR', badge: 'Mega Draw' }
     ]
   },
@@ -453,11 +415,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     packages: [
       { id: 'fc-40', name: '40 FC Points', amount: 40, quantity: 40, unit: 'FP', price: 130, currency: 'BIRR', packageGroup: 'FC Points' },
       { id: 'fc-100', name: '100 FC Points', amount: 100, quantity: 100, unit: 'FP', price: 260, currency: 'BIRR', packageGroup: 'FC Points' },
-      { id: 'fc-520', name: '520 FC Points', amount: 520, quantity: 520, unit: 'FP', price: 1150, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Popular' },
-      { id: 'fc-1070', name: '1,070 FC Points', amount: 1070, quantity: 1070, unit: 'FP', price: 2300, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Best Value' },
-      { id: 'fc-2200', name: '2,200 FC Points', amount: 2200, quantity: 2200, unit: 'FP', price: 4600, currency: 'BIRR', packageGroup: 'FC Points' },
-      { id: 'fc-5750', name: '5,750 FC Points', amount: 5750, quantity: 5750, unit: 'FP', price: 11200, currency: 'BIRR', packageGroup: 'FC Points', badge: 'TOTY Pack' },
-      { id: 'fc-12000', name: '12,000 FC Points', amount: 12000, quantity: 12000, unit: 'FP', price: 22800, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Icon Pack' },
+      { id: 'fc-520', name: '520 FC Points', amount: 520, quantity: 520, unit: 'FP', price: 1500, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Popular' },
+      { id: 'fc-1070', name: '1,070 FC Points', amount: 1070, quantity: 1070, unit: 'FP', price: 2500, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Best Value' },
+      { id: 'fc-2200', name: '2,200 FC Points', amount: 2200, quantity: 2200, unit: 'FP', price: 3999, currency: 'BIRR', packageGroup: 'FC Points' },
+      { id: 'fc-5750', name: '5,750 FC Points', amount: 5750, quantity: 5750, unit: 'FP', price: 8850, currency: 'BIRR', packageGroup: 'FC Points', badge: 'TOTY Pack' },
+      { id: 'fc-12000', name: '12,000 FC Points', amount: 12000, quantity: 12000, unit: 'FP', price: 16750, currency: 'BIRR', packageGroup: 'FC Points', badge: 'Icon Pack' },
       { id: 'fc-silver-2k', name: '2,000 Silver', amount: 2000, quantity: 2000, unit: 'Silver', price: 350, currency: 'BIRR', packageGroup: 'Silver Packs' },
       { id: 'fc-silver-10k', name: '10,000 Silver', amount: 10000, quantity: 10000, unit: 'Silver', price: 1550, currency: 'BIRR', packageGroup: 'Silver Packs' },
       { id: 'fc-silver-50k', name: '50,000 Silver', amount: 50000, quantity: 50000, unit: 'Silver', price: 6800, currency: 'BIRR', packageGroup: 'Silver Packs', badge: 'Best Deal' }
@@ -494,17 +456,17 @@ export const INITIAL_PRODUCTS: Product[] = [
       }
     ],
     packages: [
-      { id: 'tg-star-50', name: '50 Stars', amount: 50, quantity: 50, unit: 'Stars', price: 150, currency: 'BIRR' },
-      { id: 'tg-star-75', name: '75 Stars', amount: 75, quantity: 75, unit: 'Stars', price: 220, currency: 'BIRR' },
-      { id: 'tg-star-100', name: '100 Stars', amount: 100, quantity: 100, unit: 'Stars', price: 290, currency: 'BIRR' },
+      { id: 'tg-star-50', name: '50 Stars', amount: 50, quantity: 50, unit: 'Stars', price: 270, currency: 'BIRR' },
+      { id: 'tg-star-75', name: '75 Stars', amount: 75, quantity: 75, unit: 'Stars', price: 340, currency: 'BIRR' },
+      { id: 'tg-star-100', name: '100 Stars', amount: 100, quantity: 100, unit: 'Stars', price: 420, currency: 'BIRR' },
       { id: 'tg-star-150', name: '150 Stars', amount: 150, quantity: 150, unit: 'Stars', price: 440, currency: 'BIRR' },
-      { id: 'tg-star-250', name: '250 Stars', amount: 250, quantity: 250, unit: 'Stars', price: 730, currency: 'BIRR' },
-      { id: 'tg-star-350', name: '350 Stars', amount: 350, quantity: 350, unit: 'Stars', price: 1020, currency: 'BIRR' },
-      { id: 'tg-star-500', name: '500 Stars', amount: 500, quantity: 500, unit: 'Stars', price: 1450, currency: 'BIRR', badge: 'Popular' },
-      { id: 'tg-star-750', name: '750 Stars', amount: 750, quantity: 750, unit: 'Stars', price: 2170, currency: 'BIRR' },
-      { id: 'tg-star-1000', name: '1,000 Stars', amount: 1000, quantity: 1000, unit: 'Stars', price: 2890, currency: 'BIRR', badge: 'Best Value' },
-      { id: 'tg-star-1500', name: '1,500 Stars', amount: 1500, quantity: 1500, unit: 'Stars', price: 4300, currency: 'BIRR' },
-      { id: 'tg-star-2500', name: '2,500 Stars', amount: 2500, quantity: 2500, unit: 'Stars', price: 7150, currency: 'BIRR' },
+      { id: 'tg-star-250', name: '250 Stars', amount: 250, quantity: 250, unit: 'Stars', price: 950, currency: 'BIRR' },
+      { id: 'tg-star-350', name: '350 Stars', amount: 350, quantity: 350, unit: 'Stars', price: 1400, currency: 'BIRR' },
+      { id: 'tg-star-500', name: '500 Stars', amount: 500, quantity: 500, unit: 'Stars', price: 1750, currency: 'BIRR', badge: 'Popular' },
+      { id: 'tg-star-750', name: '750 Stars', amount: 750, quantity: 750, unit: 'Stars', price: 2600, currency: 'BIRR' },
+      { id: 'tg-star-1000', name: '1,000 Stars', amount: 1000, quantity: 1000, unit: 'Stars', price: 3400, currency: 'BIRR', badge: 'Best Value' },
+      { id: 'tg-star-1500', name: '1,500 Stars', amount: 1500, quantity: 1500, unit: 'Stars', price: 4800, currency: 'BIRR' },
+      { id: 'tg-star-2500', name: '2,500 Stars', amount: 2500, quantity: 2500, unit: 'Stars', price: 8200, currency: 'BIRR' },
       { id: 'tg-star-5000', name: '5,000 Stars', amount: 5000, quantity: 5000, unit: 'Stars', price: 14300, currency: 'BIRR', badge: 'Whale' },
       { id: 'tg-star-10000', name: '10,000 Stars', amount: 10000, quantity: 10000, unit: 'Stars', price: 28500, currency: 'BIRR', badge: 'Mega Whale' }
     ],
@@ -529,7 +491,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     image: '/telegrampremium.jpg',
     badge: 'Premium Activation',
     isPopular: true,
-    popularPriceText: '6 months ➡️ 3,900 birr',
+    popularPriceText: '6 months ➡️ 3,600 birr',
     status: 'Fast Delivery',
     deliveryEstimate: '1 - 3 minutes',
     requiredFields: [
@@ -559,9 +521,9 @@ export const INITIAL_PRODUCTS: Product[] = [
       }
     ],
     packages: [
-      { id: 'tg-prem-3m', name: '3 Months Premium', amount: 3, quantity: 3, unit: 'Months', price: 2300, currency: 'BIRR' },
-      { id: 'tg-prem-6m', name: '6 Months Premium', amount: 6, quantity: 6, unit: 'Months', price: 3900, currency: 'BIRR', badge: 'Popular' },
-      { id: 'tg-prem-12m', name: '12 Months (1 Year) Premium', amount: 12, quantity: 12, unit: 'Months', price: 6800, currency: 'BIRR', badge: 'Best Value' }
+      { id: 'tg-prem-3m', name: '3 Months Premium', amount: 3, quantity: 3, unit: 'Months', price: 2600, currency: 'BIRR' },
+      { id: 'tg-prem-6m', name: '6 Months Premium', amount: 6, quantity: 6, unit: 'Months', price: 3600, currency: 'BIRR', badge: 'Popular' },
+      { id: 'tg-prem-12m', name: '12 Months (1 Year) Premium', amount: 12, quantity: 12, unit: 'Months', price: 6200, currency: 'BIRR', badge: 'Best Value' }
     ],
     guideSteps: [
       'Choose subscription duration (3, 6, or 12 months)',
@@ -597,15 +559,22 @@ export const INITIAL_PRODUCTS: Product[] = [
       }
     ],
     packages: [
-      { id: 'ttc-30', name: '30 Coins', amount: 30, quantity: 30, unit: 'Coins', price: 150, currency: 'BIRR' },
-      { id: 'ttc-70', name: '70 Coins', amount: 70, quantity: 70, unit: 'Coins', price: 200, currency: 'BIRR' },
-      { id: 'ttc-350', name: '350 Coins', amount: 350, quantity: 350, unit: 'Coins', price: 850, currency: 'BIRR' },
-      { id: 'ttc-700', name: '700 Coins', amount: 700, quantity: 700, unit: 'Coins', price: 1650, currency: 'BIRR', badge: 'Popular' },
-      { id: 'ttc-1000', name: '1,000 Coins', amount: 1000, quantity: 1000, unit: 'Coins', price: 2300, currency: 'BIRR', badge: 'Best Value' },
-      { id: 'ttc-2000', name: '2,000 Coins', amount: 2000, quantity: 2000, unit: 'Coins', price: 4400, currency: 'BIRR' },
-      { id: 'ttc-5000', name: '5,000 Coins', amount: 5000, quantity: 5000, unit: 'Coins', price: 11200, currency: 'BIRR', badge: 'Creator Pack' },
-      { id: 'ttc-10000', name: '10,000 Coins', amount: 10000, quantity: 10000, unit: 'Coins', price: 22400, currency: 'BIRR', badge: 'Streamer' },
-      { id: 'ttc-30000', name: '30,000 Coins', amount: 30000, quantity: 30000, unit: 'Coins', price: 62300, currency: 'BIRR', badge: 'Universe Gift' }
+      { id: 'ttc-50', name: '50 Coins', amount: 50, quantity: 50, unit: 'Coins', price: 270, currency: 'BIRR' },
+      { id: 'ttc-100', name: '100 Coins', amount: 100, quantity: 100, unit: 'Coins', price: 370, currency: 'BIRR' },
+      { id: 'ttc-200', name: '200 Coins', amount: 200, quantity: 200, unit: 'Coins', price: 570, currency: 'BIRR' },
+      { id: 'ttc-500', name: '500 Coins', amount: 500, quantity: 500, unit: 'Coins', price: 1500, currency: 'BIRR' },
+      { id: 'ttc-800', name: '800 Coins', amount: 800, quantity: 800, unit: 'Coins', price: 2000, currency: 'BIRR' },
+      { id: 'ttc-1000', name: '1,000 Coins', amount: 1000, quantity: 1000, unit: 'Coins', price: 2500, currency: 'BIRR', badge: 'Popular' },
+      { id: 'ttc-1500', name: '1,500 Coins', amount: 1500, quantity: 1500, unit: 'Coins', price: 3500, currency: 'BIRR' },
+      { id: 'ttc-2000', name: '2,000 Coins', amount: 2000, quantity: 2000, unit: 'Coins', price: 4800, currency: 'BIRR', badge: 'Best Value' },
+      { id: 'ttc-3000', name: '3,000 Coins', amount: 3000, quantity: 3000, unit: 'Coins', price: 7000, currency: 'BIRR' },
+      { id: 'ttc-4000', name: '4,000 Coins', amount: 4000, quantity: 4000, unit: 'Coins', price: 9200, currency: 'BIRR' },
+      { id: 'ttc-5000', name: '5,000 Coins', amount: 5000, quantity: 5000, unit: 'Coins', price: 11600, currency: 'BIRR', badge: 'Creator Pack' },
+      { id: 'ttc-7500', name: '7,500 Coins', amount: 7500, quantity: 7500, unit: 'Coins', price: 17200, currency: 'BIRR' },
+      { id: 'ttc-10000', name: '10,000 Coins', amount: 10000, quantity: 10000, unit: 'Coins', price: 23200, currency: 'BIRR', badge: 'Streamer' },
+      { id: 'ttc-17000', name: '17,000 Coins', amount: 17000, quantity: 17000, unit: 'Coins', price: 42000, currency: 'BIRR' },
+      { id: 'ttc-20000', name: '20,000 Coins', amount: 20000, quantity: 20000, unit: 'Coins', price: 46000, currency: 'BIRR' },
+      { id: 'ttc-30000', name: '30,000 Coins', amount: 30000, quantity: 30000, unit: 'Coins', price: 69000, currency: 'BIRR', badge: 'Universe Gift' }
     ],
     guideSteps: [
       'Choose the number of TikTok Coins',
@@ -650,9 +619,9 @@ export const INITIAL_PRODUCTS: Product[] = [
       }
     ],
     packages: [
-      { id: 'snap-3m', name: '3 Months', amount: 3, quantity: 3, unit: 'Months', price: 2700, currency: 'BIRR', badge: 'Popular' },
-      { id: 'snap-6m', name: '6 Months', amount: 6, quantity: 6, unit: 'Months', price: 4900, currency: 'BIRR', badge: 'Best Value' },
-      { id: 'snap-12m', name: '1 Year', amount: 12, quantity: 12, unit: 'Months', price: 7700, currency: 'BIRR', badge: 'Save 40%' }
+      { id: 'snap-3m', name: '3 Months', amount: 3, quantity: 3, unit: 'Months', price: 2800, currency: 'BIRR', badge: 'Popular' },
+      { id: 'snap-6m', name: '6 Months', amount: 6, quantity: 6, unit: 'Months', price: 4999, currency: 'BIRR', badge: 'Best Value' },
+      { id: 'snap-12m', name: '1 Year', amount: 12, quantity: 12, unit: 'Months', price: 7800, currency: 'BIRR', badge: 'Save 40%' }
     ],
     guideSteps: [
       'Choose your preferred Snapchat Premium duration (3m, 6m, 1y)',

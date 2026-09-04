@@ -13,12 +13,11 @@ import {
   Headphones,
   Copy,
   Check,
-  Sparkles,
+  Star,
   Bot,
   ExternalLink,
   ChevronRight,
-  Info,
-  ArrowLeft
+  Info
 } from 'lucide-react';
 
 interface ProfileViewProps {
@@ -36,7 +35,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onToggleBotMode,
   onBack
 }) => {
-  const { user, guestId, isInsideTelegram, isGuest, haptic, switchDemoUser } = useTelegram();
+  const { user, guestId, isInsideTelegram, isGuest, haptic } = useTelegram();
   const [copiedId, setCopiedId] = useState(false);
 
   const totalOrders = orders.length;
@@ -55,33 +54,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   };
 
   return (
-    <div className="space-y-5 pb-24 animate-fadeIn">
-      {/* Header with Back Button */}
-      <div className="flex items-center gap-2.5">
-        {onBack && (
-          <button
-            id="btn-profile-back"
-            onClick={() => {
-              haptic('light');
-              onBack();
-            }}
-            className="p-2 rounded-xl bg-[#151515] border border-[#27272A] text-neutral-300 hover:text-white hover:border-[#E5092F]/40 hover:bg-[#1f1f1f] transition-all flex items-center justify-center flex-shrink-0"
-            title="Back to Store"
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-        )}
-        <div>
-          <h1 className="text-xl font-extrabold text-white tracking-tight">
-            {isGuest ? 'Customer Profile' : 'Telegram Profile'}
-          </h1>
-          <p className="text-xs text-[#A1A1AA] mt-0.5">
-            {isGuest
-              ? 'Connected via Secure Device Guest Session'
-              : 'Connected via Telegram WebApp authentication'}
-          </p>
-        </div>
+    <div className="space-y-5 pb-6 sm:pb-8 animate-fadeIn">
+      {/* Header */}
+      <div>
+        <h1 className="text-xl font-extrabold text-white tracking-tight">
+          {isGuest ? 'Customer Profile' : 'Telegram Profile'}
+        </h1>
+        <p className="text-xs text-[#A1A1AA] mt-0.5">
+          {isGuest
+            ? 'Connected via Secure Device Guest Session'
+            : 'Connected via Telegram WebApp authentication'}
+        </p>
       </div>
 
       {/* User Identity Card */}
@@ -101,7 +84,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             )}
             {user.is_premium && (
               <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#E5092F] text-white flex items-center justify-center text-[10px] shadow-sm font-bold">
-                ⭐
+                <Star className="w-2.5 h-2.5 text-white fill-white" />
               </span>
             )}
           </div>
@@ -112,7 +95,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 {isGuest ? 'Guest Customer' : `${user.first_name} ${user.last_name || ''}`}
               </h2>
               {user.is_premium && (
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30">
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#E5092F]/15 text-[#E5092F] border border-[#E5092F]/30 flex items-center gap-1">
+                  <Star className="w-2.5 h-2.5 fill-current" />
                   Premium
                 </span>
               )}
@@ -233,30 +217,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       </div>
 
-      {/* Switch Demo Telegram User (Dev / Testing helper) */}
-      <div className="p-3.5 rounded-2xl bg-[#151515] border border-[#27272A] space-y-2.5">
-        <span className="text-xs font-bold text-neutral-300 block">
-          Telegram User Switcher (Preview Mode)
-        </span>
-        <p className="text-[11px] text-[#A1A1AA]">
-          Switch test identities to verify real Telegram user authentication isolation:
-        </p>
-        <div className="flex items-center gap-2">
-          {['Raf (@Raf_babi)', 'Sarah (@sarah_stars)', 'David (@david_crypto)'].map(
-            (label, idx) => (
-              <button
-                key={idx}
-                id={`btn-switch-user-${idx}`}
-                onClick={() => switchDemoUser(idx)}
-                className="flex-1 py-1.5 px-2 rounded-xl text-[10px] font-bold bg-[#111111] hover:bg-[#E5092F] hover:text-white text-[#A1A1AA] border border-[#27272A] transition-colors"
-              >
-                {label.split(' ')[0]}
-              </button>
-            )
-          )}
-        </div>
-      </div>
-
       {/* Store & Bot Links */}
       <div className="space-y-2">
         <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
@@ -274,7 +234,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           >
             <div className="flex items-center gap-2.5">
               <Bot className="w-4 h-4 text-[#E5092F]" />
-              <span>Launch Telegram Bot Interface (/start)</span>
+              <span>BABI AI Chat (/start)</span>
             </div>
             <ChevronRight className="w-4 h-4 text-[#A1A1AA]" />
           </button>

@@ -64,16 +64,16 @@ export function getOrderStatusBannerText(status: OrderStatus | string): string {
   const normalized = normalizeOrderStatus(status);
   switch (normalized) {
     case 'Confirmed':
-      return '✅ Order Confirmed — Your order has been accepted.';
+      return 'Order Confirmed — Your order has been accepted.';
     case 'Processing':
-      return '⚡ Order Processing — Top-up in progress.';
+      return 'Order Processing — Top-up in progress.';
     case 'Completed':
-      return '🎉 Order Completed — Your items have been successfully delivered!';
+      return 'Order Completed — Your items have been successfully delivered!';
     case 'Cancelled':
-      return '❌ Order Cancelled / Rejected — Please contact support for assistance.';
+      return 'Order Cancelled / Rejected — Please contact support for assistance.';
     case 'Pending':
     default:
-      return '⏳ Order Pending — Your order is submitted and awaiting confirmation.';
+      return 'Order Pending — Your order is submitted and awaiting confirmation.';
   }
 }
 

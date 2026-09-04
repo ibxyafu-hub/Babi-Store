@@ -53,7 +53,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         {/* Success Icon & Banner */}
         <div className="p-6 text-center bg-gradient-to-b from-[#E5092F]/15 via-[#151515] to-[#151515] border-b border-[#27272A]">
           <div
-            className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 shadow-lg animate-scaleUp border-2 ${
+            className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-3 shadow-lg animate-fadeIn border-2 ${
               isCompleted
                 ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400 shadow-emerald-500/20'
                 : isConfirmed
@@ -196,7 +196,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
               haptic('medium');
               onViewOrders();
             }}
-            className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all transform active:scale-95"
+            className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98]"
           >
             <Package className="w-4 h-4" />
             <span>Track Order in My Orders</span>

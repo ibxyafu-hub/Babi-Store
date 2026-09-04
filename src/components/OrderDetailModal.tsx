@@ -14,7 +14,8 @@ import {
   Zap,
   ArrowRight,
   ShieldCheck,
-  Send
+  Send,
+  User
 } from 'lucide-react';
 
 interface OrderDetailModalProps {
@@ -183,7 +184,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                           : 'bg-[#151515] border border-[#27272A] text-neutral-500'
                       }`}
                     >
-                      {s.done ? '✓' : idx + 1}
+                      {s.done ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : idx + 1}
                     </div>
                     <span className={s.done ? 'text-white font-semibold' : 'text-neutral-500'}>
                       {s.title}
@@ -198,7 +199,8 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           {/* Customer Profile & Identity Section */}
           <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-2 text-xs">
             <span className="text-xs font-bold text-neutral-300 flex items-center gap-1.5">
-              <span>👤</span> Customer
+              <User className="w-3.5 h-3.5 text-[#E5092F]" />
+              <span>Customer Profile</span>
             </span>
 
             <div className="flex justify-between py-1 border-b border-[#27272A] items-center">

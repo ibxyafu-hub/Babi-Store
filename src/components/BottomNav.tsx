@@ -26,7 +26,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#080808]/95 backdrop-blur-xl border-t border-[#27272A] pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#080808]/95 backdrop-blur-xl border-t border-[#27272A] pb-safe md:hidden">
       <div className="max-w-md mx-auto px-3 py-1.5 flex items-center justify-between">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -52,7 +52,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               )}
 
               <div className="relative">
-                <Icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} />
+                <Icon className={`w-5 h-5 transition-all duration-150 ${isActive ? 'scale-105' : 'opacity-80'}`} />
                 {item.id === 'orders' && pendingOrdersCount > 0 && (
                   <span className="absolute -top-1.5 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-[#E5092F] text-white text-[9px] font-extrabold flex items-center justify-center">
                     {pendingOrdersCount}

@@ -12,7 +12,6 @@ import {
   RefreshCw,
   ShoppingBag,
   Filter,
-  ArrowLeft,
   Zap,
   AlertCircle
 } from 'lucide-react';
@@ -103,31 +102,16 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-24 animate-fadeIn">
+    <div className="space-y-4 pb-6 sm:pb-8 animate-fadeIn">
       {/* Header with back button and refresh */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <button
-            id="btn-orders-back"
-            onClick={() => {
-              haptic('light');
-              if (onBack) onBack();
-              else onBrowseStore();
-            }}
-            className="p-2 rounded-xl bg-[#151515] border border-[#27272A] text-neutral-300 hover:text-white hover:border-[#E5092F]/40 hover:bg-[#1f1f1f] transition-all flex items-center justify-center flex-shrink-0"
-            title="Back to Store"
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="text-xl font-extrabold text-white tracking-tight">
-              My Orders
-            </h1>
-            <p className="text-xs text-[#A1A1AA]">
-              Track your instant top-ups and delivery statuses
-            </p>
-          </div>
+        <div>
+          <h1 className="text-xl font-extrabold text-white tracking-tight">
+            My Orders
+          </h1>
+          <p className="text-xs text-[#A1A1AA]">
+            Track your instant top-ups and delivery statuses
+          </p>
         </div>
 
         <button

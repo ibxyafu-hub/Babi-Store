@@ -5,14 +5,14 @@ import {
   MessageCircle,
   Send,
   ExternalLink,
-  ArrowLeft,
   Copy,
   Check,
   ShieldAlert,
   FileText,
   AlertTriangle,
   Clock,
-  Sparkles
+  Sparkles,
+  Headphones
 } from 'lucide-react';
 
 interface SupportViewProps {
@@ -67,49 +67,35 @@ export const SupportView: React.FC<SupportViewProps> = ({ initialOrderId = '', o
   };
 
   return (
-    <div className="space-y-4 pb-28 animate-fadeIn max-w-2xl mx-auto">
-      {/* Header with optional Back Button */}
-      <div className="flex items-center gap-2.5">
-        {onBack && (
-          <button
-            id="btn-support-back"
-            onClick={() => {
-              haptic('light');
-              onBack();
-            }}
-            className="p-2.5 rounded-xl bg-[#151515] border border-[#27272A] text-neutral-300 hover:text-white hover:border-[#E5092F]/50 hover:bg-[#1f1f1f] transition-all flex items-center justify-center flex-shrink-0"
-            title="Back"
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-        )}
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-black text-white tracking-tight uppercase">
-              BABI STORE SUPPORT
-            </h1>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#E5092F]/20 text-[#E5092F] border border-[#E5092F]/30 uppercase">
-              Official
-            </span>
-          </div>
-          <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
-            If you have an issue with an order, payment, or product, contact our support team.
-          </p>
+    <div className="space-y-4 pb-6 sm:pb-8 animate-fadeIn max-w-2xl mx-auto">
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-black text-white tracking-tight uppercase">
+            BABI STORE SUPPORT
+          </h1>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#E5092F]/20 text-[#E5092F] border border-[#E5092F]/30 uppercase">
+            Official
+          </span>
         </div>
+        <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+          If you have an issue with an order, payment, or product, contact our support team.
+        </p>
       </div>
 
-      {/* 💬 SUPPORT SECTION CARD */}
+      {/* Support Section Card */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
         className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#1c1415] via-[#141416] to-[#111111] border border-[#E5092F]/30 space-y-4 shadow-xl shadow-black/60 relative overflow-hidden"
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-base">👨‍💻</span>
+              <div className="w-7 h-7 rounded-lg bg-[#E5092F]/15 border border-[#E5092F]/30 flex items-center justify-center text-[#E5092F]">
+                <Headphones className="w-4 h-4" />
+              </div>
               <h2 className="text-sm font-extrabold text-white tracking-tight">
                 Support Team
               </h2>
@@ -163,16 +149,16 @@ export const SupportView: React.FC<SupportViewProps> = ({ initialOrderId = '', o
           className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-sm shadow-lg shadow-[#E5092F]/30 transition-all transform active:scale-[0.98] border border-[#ff3355]/40"
         >
           <MessageCircle className="w-4 h-4 text-white fill-current" />
-          <span>💬 Contact Support</span>
+          <span>Contact Support</span>
           <ExternalLink className="w-3.5 h-3.5 text-white/80" />
         </button>
       </motion.div>
 
-      {/* 📜 STORE RULES SECTION */}
+      {/* STORE RULES SECTION */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.18, ease: 'easeOut' }}
         className="p-4 sm:p-5 rounded-2xl bg-[#111111] border border-[#27272A] space-y-4 shadow-xl shadow-black/50"
       >
         {/* Rules Header */}
@@ -183,7 +169,7 @@ export const SupportView: React.FC<SupportViewProps> = ({ initialOrderId = '', o
             </div>
             <div>
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#E5092F] block">
-                📜 STORE RULES
+                STORE RULES
               </span>
               <h2 className="text-sm sm:text-base font-black text-white tracking-tight">
                 እነዚን አንብቡ ከመግዛታቹ በፊት

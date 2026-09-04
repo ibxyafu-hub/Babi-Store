@@ -13,7 +13,10 @@ import {
   Sparkles,
   Flame,
   CheckCircle2,
-  Clock
+  Clock,
+  Phone,
+  Send,
+  Copy
 } from 'lucide-react';
 
 interface ProductDetailModalProps {
@@ -27,7 +30,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onProceedToOrder
 }) => {
-  const { haptic } = useTelegram();
+  const { haptic, openTelegramLink } = useTelegram();
 
   if (!product) return null;
 
@@ -59,6 +62,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const [quantity, setQuantity] = useState<number>(1);
   const [showFullGuide, setShowFullGuide] = useState<boolean>(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [copiedTg, setCopiedTg] = useState(false);
+
+  const isFacebookBoost = product.id === 'facebook-boost' || product.name.toLowerCase().includes('facebook');
 
   const selectedPackage =
     product.packages.find((p) => p.id === selectedPackageId) ||
@@ -148,7 +155,141 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           )}
 
-          {/* Group Filter Tabs (e.g. Free Fire Diamonds vs Membership) */}
+          {isFacebookBoost ? (
+            <div className="space-y-4 py-2">
+              <div className="p-4 rounded-2xl bg-[#1A1016] border border-[#3A1B28] text-center space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#E5092F]/15 text-[#ff8093] text-[11px] font-mono font-bold border border-[#E5092F]/30 uppercase tracking-wider">
+                  Facebook Page Boost
+                </div>
+                <h3 className="text-xl font-extrabold text-white">Contact Me</h3>
+                <p className="text-xs text-neutral-300 leading-relaxed max-w-xs mx-auto">
+                  For Facebook Page Boost services, please contact me directly:
+                </p>
+              </div>
+
+              {/* Phone Link */}
+              <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] hover:border-[#E5092F]/40 transition-colors">
+                <div className="flex items-center justify-between gap-3">
+                  <a
+                    href="tel:0989678770"
+                    id="modal-link-facebook-phone"
+                    onClick={() => haptic('selectionChanged')}
+                    className="flex items-center gap-3 min-w-0 flex-1 group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Phone className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] text-neutral-400 uppercase font-semibold block tracking-wider">
+                        Phone
+                      </span>
+                      <span className="text-sm font-mono font-black text-white group-hover:text-emerald-400 transition-colors tracking-wide underline underline-offset-2 decoration-emerald-500/50">
+                        0989678770
+                      </span>
+                    </div>
+                  </a>
+
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button
+                      type="button"
+                      id="modal-btn-copy-facebook-phone"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        haptic('selectionChanged');
+                        navigator.clipboard.writeText('0989678770');
+                        setCopiedPhone(true);
+                        setTimeout(() => setCopiedPhone(false), 2000);
+                      }}
+                      className="p-2 rounded-lg bg-[#1E1E24] hover:bg-[#2A2A32] border border-[#3A3A42] text-neutral-300 hover:text-white transition-all active:scale-95"
+                      title="Copy Phone Number"
+                    >
+                      {copiedPhone ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-neutral-400" />
+                      )}
+                    </button>
+                    <a
+                      href="tel:0989678770"
+                      id="modal-btn-dial-facebook-phone"
+                      onClick={() => haptic('selectionChanged')}
+                      className="px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-1"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Call</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Telegram Link */}
+              <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#27272A] hover:border-[#E5092F]/40 transition-colors">
+                <div className="flex items-center justify-between gap-3">
+                  <a
+                    href="https://t.me/Raf_babi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    id="modal-link-facebook-telegram"
+                    onClick={() => {
+                      haptic('selectionChanged');
+                      openTelegramLink('https://t.me/Raf_babi');
+                    }}
+                    className="flex items-center gap-3 min-w-0 flex-1 group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[#0088cc]/20 border border-[#0088cc]/40 text-[#29b6f6] flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] text-neutral-400 uppercase font-semibold block tracking-wider">
+                        Telegram
+                      </span>
+                      <span className="text-sm font-mono font-black text-white group-hover:text-[#29b6f6] transition-colors tracking-wide underline underline-offset-2 decoration-[#0088cc]/50">
+                        @Raf_babi
+                      </span>
+                    </div>
+                  </a>
+
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button
+                      type="button"
+                      id="modal-btn-copy-facebook-telegram"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        haptic('selectionChanged');
+                        navigator.clipboard.writeText('@Raf_babi');
+                        setCopiedTg(true);
+                        setTimeout(() => setCopiedTg(false), 2000);
+                      }}
+                      className="p-2 rounded-lg bg-[#1E1E24] hover:bg-[#2A2A32] border border-[#3A3A42] text-neutral-300 hover:text-white transition-all active:scale-95"
+                      title="Copy Telegram Username"
+                    >
+                      {copiedTg ? (
+                        <Check className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-neutral-400" />
+                      )}
+                    </button>
+                    <a
+                      href="https://t.me/Raf_babi"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      id="modal-btn-chat-facebook-telegram"
+                      onClick={() => {
+                        haptic('selectionChanged');
+                        openTelegramLink('https://t.me/Raf_babi');
+                      }}
+                      className="px-3 py-2 rounded-lg bg-[#E5092F] hover:bg-[#c70828] text-white text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-1"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Chat</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Group Filter Tabs (e.g. Free Fire Diamonds vs Membership) */}
           {availableGroups.length > 1 && (
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#111111] border border-[#27272A]">
               <button
@@ -323,35 +464,65 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               )}
             </div>
           )}
+            </>
+          )}
         </div>
 
         {/* Footer & Continue CTA */}
-        <div className="p-4 border-t border-[#27272A] bg-[#080808] flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <span className="text-[10px] text-[#A1A1AA] uppercase tracking-wider block truncate">
-              {selectedPackage?.name} {quantity > 1 ? `(×${quantity})` : ''}
-            </span>
-            <div className="flex items-baseline gap-1">
-              <span className="text-base font-extrabold text-[#E5092F] font-mono">
-                {formatPrice(totalPrice, 'BIRR')}
-              </span>
-            </div>
+        {isFacebookBoost ? (
+          <div className="p-4 border-t border-[#27272A] bg-[#080808] flex items-center gap-3">
+            <a
+              href="tel:0989678770"
+              id="footer-btn-call-facebook"
+              onClick={() => haptic('medium')}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold text-xs shadow-lg transition-all active:scale-[0.98]"
+            >
+              <Phone className="w-4 h-4" />
+              <span>CALL (0989678770)</span>
+            </a>
+            <a
+              href="https://t.me/Raf_babi"
+              target="_blank"
+              rel="noopener noreferrer"
+              id="footer-btn-tg-facebook"
+              onClick={() => {
+                haptic('medium');
+                openTelegramLink('https://t.me/Raf_babi');
+              }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98]"
+            >
+              <Send className="w-4 h-4" />
+              <span>MESSAGE TELEGRAM</span>
+            </a>
           </div>
+        ) : (
+          <div className="p-4 border-t border-[#27272A] bg-[#080808] flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <span className="text-[10px] text-[#A1A1AA] uppercase tracking-wider block truncate">
+                {selectedPackage?.name} {quantity > 1 ? `(×${quantity})` : ''}
+              </span>
+              <div className="flex items-baseline gap-1">
+                <span className="text-base font-extrabold text-[#E5092F] font-mono">
+                  {formatPrice(totalPrice, 'BIRR')}
+                </span>
+              </div>
+            </div>
 
-          <button
-            id="btn-buy-now"
-            onClick={() => {
-              if (selectedPackage) {
-                haptic('heavy');
-                onProceedToOrder(product, selectedPackage, quantity);
-              }
-            }}
-            className="flex-1 flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all transform active:scale-95"
-          >
-            <span>CONTINUE</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+            <button
+              id="btn-buy-now"
+              onClick={() => {
+                if (selectedPackage) {
+                  haptic('heavy');
+                  onProceedToOrder(product, selectedPackage, quantity);
+                }
+              }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#E5092F] hover:bg-[#c70828] text-white font-extrabold text-xs shadow-lg shadow-[#E5092F]/25 transition-all active:scale-[0.98]"
+            >
+              <span>CONTINUE</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

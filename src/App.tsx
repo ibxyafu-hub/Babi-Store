@@ -38,7 +38,7 @@ function MainStoreApp() {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [tabHistory, setTabHistory] = useState<NavTab[]>([]);
   const [isBotMode, setIsBotMode] = useState<boolean>(false);
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('gaming');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string | null>(null);
   const [selectedSubCategoryFilter, setSelectedSubCategoryFilter] = useState<string>('all');
 
   // State for Catalog and Orders
@@ -136,6 +136,15 @@ function MainStoreApp() {
     if (tab !== activeTab) {
       setTabHistory((prev) => [...prev, activeTab]);
       setActiveTab(tab);
+      if (tab === 'categories') {
+        setSelectedCategoryFilter(null);
+        setSelectedSubCategoryFilter('all');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'categories' && selectedCategoryFilter) {
+      // If tapping Categories tab while already on it, return to Main Categories list
+      setSelectedCategoryFilter(null);
+      setSelectedSubCategoryFilter('all');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -162,6 +171,19 @@ function MainStoreApp() {
       setIsBotMode(false);
       return;
     }
+    if (activeTab === 'categories' && selectedCategoryFilter) {
+      if (selectedSubCategoryFilter && selectedSubCategoryFilter !== 'all') {
+        // Return from subcategory item list to options screen
+        setSelectedSubCategoryFilter('all');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      // Return to main categories screen
+      setSelectedCategoryFilter(null);
+      setSelectedSubCategoryFilter('all');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     if (tabHistory.length > 0) {
       const previous = tabHistory[tabHistory.length - 1];
@@ -177,6 +199,8 @@ function MainStoreApp() {
     successOrder,
     selectedProduct,
     isBotMode,
+    activeTab,
+    selectedCategoryFilter,
     tabHistory
   ]);
 
@@ -191,7 +215,8 @@ function MainStoreApp() {
       !!selectedProduct ||
       !!orderFlowState ||
       !!successOrder ||
-      !!selectedDetailOrder;
+      !!selectedDetailOrder ||
+      (activeTab === 'categories' && !!selectedCategoryFilter);
 
     if (canGoBack) {
       tgBackButton.show();
@@ -210,6 +235,7 @@ function MainStoreApp() {
     orderFlowState,
     successOrder,
     selectedDetailOrder,
+    selectedCategoryFilter,
     handleGoBack
   ]);
 
@@ -261,7 +287,8 @@ function MainStoreApp() {
     !!selectedProduct ||
     !!orderFlowState ||
     !!successOrder ||
-    !!selectedDetailOrder;
+    !!selectedDetailOrder ||
+    (activeTab === 'categories' && !!selectedCategoryFilter);
 
   return (
     <div className="min-h-screen bg-[#080808] text-white flex flex-col justify-between selection:bg-[#E5092F]/30 selection:text-white">
@@ -272,12 +299,21 @@ function MainStoreApp() {
         onToggleBotMode={() => setIsBotMode((prev) => !prev)}
         onBack={handleGoBack}
         canGoBack={canGoBack}
+        onSelectTab={navigateToTab}
       />
 
       {/* Main Container */}
-      <main className="flex-1 w-full max-w-md mx-auto px-4 pt-4">
+      <main className="flex-1 w-full max-w-md md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16 transition-all duration-200">
         {isBotMode ? (
           <BotSimulatorView
+            orders={orders}
+            products={products}
+            categories={categories}
+            onSelectProduct={(p) => {
+              setIsBotMode(false);
+              setSelectedProduct(p);
+            }}
+            onViewOrderDetails={(ord) => setSelectedDetailOrder(ord)}
             onOpenStore={() => {
               setIsBotMode(false);
               setActiveTab('home');
